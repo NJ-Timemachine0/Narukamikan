@@ -1,0 +1,45 @@
+{
+ "_about": "Other on-screen UI text. howto = labels for the control pictures, based on art/ui/howto_labels.json (digits removed: no numbers on screen). '|' in ja labels = the only places a label may wrap (removed on screen), same as subtitles. test = test-build only. credit = voice credit on the start screen (both languages). artCredit = inn picture credit (Created with Grok), a second line on the start screen, not over the title.",
+ "ja": {
+  "title": "鳴神館",
+  "credit": "VOICEVOX:玄野武宏(CV:ガロ)",
+  "artCredit": "Art: Created with Grok",
+  "subtitle": "Narukami Hall — Echoes in the Dark",
+  "howto": {
+   "move": "左半分を|ドラッグ",
+   "tap": "弱い鈴",
+   "hold": "長押しで|強い鈴",
+   "release": "手を離す",
+   "pc_move": "WASD|または矢印",
+   "pc_tap": "クリック|または Space",
+   "pc_hold": "長押しで|強い鈴",
+   "pc_release": "離す"
+  },
+  "test": [
+   "記録をコピー",
+   "コピーしました",
+   "もう一度"
+  ]
+ },
+ "en": {
+  "title": "Narukami Hall",
+  "credit": "VOICEVOX:玄野武宏(CV:ガロ)",
+  "artCredit": "Art: Created with Grok",
+  "subtitle": "Echoes in the Dark",
+  "howto": {
+   "move": "Drag on the left half",
+   "tap": "Soft bell",
+   "hold": "Hold for the strong bell",
+   "release": "Release",
+   "pc_move": "WASD or arrow keys",
+   "pc_tap": "Click or Space",
+   "pc_hold": "Hold for the strong bell",
+   "pc_release": "Release"
+  },
+  "test": [
+   "Copy log",
+   "Copied",
+   "Again"
+  ]
+ }
+}

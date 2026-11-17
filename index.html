@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="author" content="Timemachine0">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:,">
+<link rel="preload" href="fonts/ShipporiMincho-Regular-nk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/EBGaramond-Regular-nk.woff2" as="font" type="font/woff2" crossorigin>
+<title>Narukami Hall — Echoes in the Dark</title>
+<style>
+/* Fonts: subsets of Shippori Mincho and EB Garamond (SIL OFL 1.1, full texts in fonts/OFL-*.txt). tools/subset_fonts.py */
+@font-face{font-family:"NK Mincho";src:url(fonts/ShipporiMincho-Regular-nk.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"NK Mincho";src:url(fonts/ShipporiMincho-Bold-nk.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"NK Garamond";src:url(fonts/EBGaramond-Regular-nk.woff2) format("woff2");font-weight:400;font-display:swap}
+:root{--ic:56px;--labfs:max(12px,min(2.6vmin,15px));--lab:calc(var(--labfs) * 2.6);--enfs:max(18px,min(4.2vmin,28px));
+  --hb-ja:max(10px,2.5vh,env(safe-area-inset-bottom));--howto-h:calc(var(--ic) + var(--lab));--sub-en-bottom:calc(var(--hb-ja) + var(--howto-h) + 8px)}
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000;color:#d8dbe2;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
+  touch-action:none;overscroll-behavior:none;font-family:"NK Mincho","NK Garamond","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP","Noto Serif CJK JP",Georgia,"Times New Roman",serif}
+html[lang=en] body{font-family:"NK Garamond","NK Mincho",Georgia,"Times New Roman",serif}
+canvas{position:fixed;left:0;top:0;width:100%;height:100%;display:block;touch-action:none}
+#start{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4vmin;background:#000;cursor:pointer;z-index:5;transition:opacity .8s}
+#start.hide{opacity:0;pointer-events:none;visibility:hidden}
+#credit{position:absolute;bottom:max(14px,3vmin,env(safe-area-inset-bottom));left:0;right:0;text-align:center;font-family:"NK Mincho",serif;font-size:max(11px,min(2.4vmin,14px));letter-spacing:.06em;color:#7d828e;display:flex;flex-direction:column;gap:.35em;align-items:center;padding:0 6vw}
+#credit .cline{max-width:100%}
+#credit-art{font-family:"NK Garamond","NK Mincho",serif;letter-spacing:.04em;opacity:.9;font-size:.95em}
+#title{font-size:min(11vmin,64px);letter-spacing:.25em;font-weight:700;color:#e6e8ee;text-shadow:0 0 18px rgba(200,210,230,.25)}
+#title .titleimg{max-width:80vw;max-height:40vh}
+html[lang=en] #title{font-weight:400}
+#subtitle{font-family:"NK Garamond","NK Mincho",serif;font-size:min(4vmin,20px);letter-spacing:.12em;color:#9aa0ad;text-align:center;padding:0 6vw}
+#hint{display:flex;align-items:center;gap:3vmin;opacity:.75;margin-top:4vmin}
+#hint svg{width:min(14vmin,72px);height:min(14vmin,72px)}
+#pause{position:fixed;right:max(10px,env(safe-area-inset-right));top:max(10px,env(safe-area-inset-top));width:44px;height:44px;border:0;background:transparent;opacity:.35;z-index:4;padding:0;cursor:pointer}
+#pause svg{width:100%;height:100%}
+#paused{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);z-index:7;cursor:pointer}
+#paused.show{display:flex}
+#paused svg{width:min(22vmin,120px);height:min(22vmin,120px);opacity:.8}
+#muted{position:fixed;left:max(10px,env(safe-area-inset-left));top:max(10px,env(safe-area-inset-top));width:40px;height:40px;display:none;opacity:.6;z-index:4}
+#muted.show{display:block}
+#sub{position:fixed;pointer-events:none;opacity:0;color:#e4e6ec;text-shadow:0 0 6px rgba(0,0,0,.9),0 0 14px rgba(170,180,200,.25);z-index:3;line-height:1.7;letter-spacing:.08em}
+/* ja: vertical; columns 1.8em apart, letters .08em; a column may only break between pieces (the '|' marks), never inside */
+#sub.ja{writing-mode:vertical-rl;right:max(8vw,env(safe-area-inset-right));top:10vh;font-size:max(20px,min(4.6vmin,30px));line-height:1.8;
+  font-feature-settings:"vert" 1,"vrt2" 1;max-height:calc(90vh - var(--hb-ja) - var(--ic) - var(--lab) - 12px);word-break:keep-all;line-break:strict}
+#sub .seg{white-space:nowrap}
+#sub .seg.long{white-space:normal}
+#sub .ch{display:inline}
+#sub .ch.gx{opacity:.45;text-shadow:1px -1px 0 rgba(200,210,230,.35)}
+#sub.en{left:50%;transform:translateX(-50%);bottom:var(--sub-en-bottom);width:min(86vw,720px);text-align:center;font-size:var(--enfs);letter-spacing:.02em;line-height:1.65;word-break:normal}
+/* control pictures (art/ui, 256 px drawn at 48-64 px); row at the bottom. ja column and en band both sit above it (P0.2-1) */
+#howto{position:fixed;left:max(16px,4vw,env(safe-area-inset-left));right:max(16px,4vw,env(safe-area-inset-right));bottom:var(--hb-ja);height:var(--howto-h);pointer-events:none;z-index:3;display:none;justify-content:space-between;align-items:flex-end;gap:6px}
+#howto.show{display:flex}
+#howto .hi{flex:0 1 auto;width:min(max(calc(var(--ic) * 1.9),96px),calc((100% - 18px) / 4));min-width:var(--ic);display:flex;flex-direction:column;align-items:center;opacity:.8;transition:opacity .8s}
+#howto .hi.used{opacity:0}
+#howto .hi img{width:var(--ic);height:var(--ic);flex:none;display:block}
+#howto .hl{font-size:var(--labfs);line-height:1.3;color:#cfd3dc;text-align:center;max-height:2.6em;overflow:hidden}
+#howto .hi-move{order:1}
+#howto .hi-release{order:2}
+#howto .hi-tap{order:3}
+#howto .hi-hold{order:4}
+/* prologue overlay: text/choices/title sit above a black (or panned) canvas */
+#pro{position:fixed;inset:0;z-index:6;display:none}
+#pro.on{display:block}
+#protitlewrap{position:absolute;left:50%;top:28%;transform:translate(-50%,-50%);max-width:74vw;pointer-events:none;opacity:0;z-index:5;display:flex;align-items:center;justify-content:center}
+#protitlewrap.wide{top:15%}
+#protitlewrap::before{content:"";position:absolute;inset:-18% -22%;background:radial-gradient(ellipse at center,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 70%);z-index:-1}
+#protitlewrap img{display:block;max-width:74vw;max-height:24vh;height:auto;filter:drop-shadow(0 0 10px rgba(0,0,0,.7))}
+#prochoices{position:absolute;left:50%;bottom:max(16vh,env(safe-area-inset-bottom) + 72px);transform:translateX(-50%);display:none;flex-direction:column;gap:10px;width:min(84vw,420px);z-index:6}
+#prochoices.on{display:flex}
+#prochoices button{appearance:none;font:inherit;font-size:max(16px,min(3.6vmin,22px));letter-spacing:.08em;color:#e4e6ec;background:rgba(0,0,0,.45);border:1px solid rgba(200,210,230,.28);border-radius:4px;padding:.7em 1em;cursor:pointer;text-align:center;line-height:1.5}
+#prochoices button:hover,#prochoices button:focus{border-color:rgba(200,210,230,.6);background:rgba(0,0,0,.6)}
+html[lang=en] #prochoices button{font-family:"NK Garamond","NK Mincho",serif;letter-spacing:.03em}
+#pronext,#proskip{appearance:none;background:transparent;border:0;color:#cfd3dc;padding:0;cursor:pointer;z-index:6;opacity:.45}
+#pronext{position:absolute;left:50%;bottom:max(20px,4vh,env(safe-area-inset-bottom));transform:translateX(-50%);width:52px;height:52px;display:none}
+#pronext.on{display:block}
+#pronext svg,#proskip svg{width:100%;height:100%;display:block}
+#proskip{position:absolute;right:max(58px,env(safe-area-inset-right));top:max(10px,env(safe-area-inset-top));width:36px;height:36px}
+#pronext:hover,#proskip:hover{opacity:.85}
+/* during the inn scene, keep English subtitles above the choice row */
+#sub.en.pro-inn{bottom:calc(max(16vh, env(safe-area-inset-bottom) + 72px) + 8.5em)}
+/*@TEST*/
+#testhud{display:none;position:fixed;left:50%;transform:translateX(-50%);top:max(6px,env(safe-area-inset-top));font:11px/1 monospace;color:#7c8a7c;z-index:7;pointer-events:none;align-items:center;gap:6px}
+#testhud.on{display:flex}
+#testdot{width:8px;height:8px;border-radius:50%;background:#553}
+#testdot.ready{background:#3a6}
+#testdot.flash{background:#fff;box-shadow:0 0 6px #fff}
+#testlog{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#000;z-index:8;font:14px/1.5 monospace;color:#cfd3dc}
+#testlog.show{display:flex}
+#testlog pre{margin:0;padding:12px 16px;border:1px solid #333;max-width:92vw;white-space:pre-wrap;word-break:break-all;-webkit-user-select:text;user-select:text}
+#testlog button{font:15px sans-serif;padding:10px 20px;background:#111;color:#e6e8ee;border:1px solid #555;border-radius:6px}
+/*@END_TEST*/
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="start" role="button" aria-label="start">
+  <div id="title">Narukami Hall</div>
+  <div id="subtitle">Echoes in the Dark</div>
+  <div id="credit">
+    <div class="cline" id="credit-voice">VOICEVOX:玄野武宏(CV:ガロ)</div>
+    <div class="cline" id="credit-art">Art: Created with Grok</div>
+  </div>
+  <div id="hint" aria-hidden="true">
+    <!-- earphones -->
+    <svg viewBox="0 0 64 64" fill="none" stroke="#cfd3dc" stroke-width="2" stroke-linecap="round"><path d="M14 38v-6a18 18 0 0 1 36 0v6"/><rect x="9" y="36" width="9" height="16" rx="4"/><rect x="46" y="36" width="9" height="16" rx="4"/></svg>
+    <!-- tap -->
+    <svg viewBox="0 0 64 64" fill="none" stroke="#cfd3dc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="30" cy="16" r="9" opacity=".5"/><path d="M30 16v22l-5-5a4 4 0 0 0-6 5l10 13c2 3 5 4 8 4h6c5 0 8-4 8-9V34a3 3 0 0 0-6 0v-2a3 3 0 0 0-6 0v-1a3 3 0 0 0-6 0"/></svg>
+  </div>
+</div>
+<button id="pause" aria-label="pause"><svg viewBox="0 0 44 44" fill="#cfd3dc"><rect x="13" y="11" width="6" height="22" rx="2"/><rect x="25" y="11" width="6" height="22" rx="2"/></svg></button>
+<div id="paused" aria-label="resume"><svg viewBox="0 0 64 64" fill="none" stroke="#cfd3dc" stroke-width="2.5" stroke-linejoin="round"><path d="M24 16l24 16-24 16z"/></svg></div>
+<svg id="muted" viewBox="0 0 40 40" fill="none" stroke="#cfd3dc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 16h6l8-6v20l-8-6H8z"/><path d="M28 15l8 10M36 15l-8 10"/></svg>
+<div id="howto" aria-hidden="true"></div>
+<div id="sub" aria-live="polite"></div>
+<div id="pro" aria-hidden="true">
+  <div id="protitlewrap"><img id="protitle" alt=""></div>
+  <div id="prochoices"></div>
+  <button type="button" id="pronext" aria-label="continue"><svg viewBox="0 0 52 52" fill="none" stroke="#cfd3dc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 14l16 12-16 12"/></svg></button>
+  <button type="button" id="proskip" aria-label="skip"><svg viewBox="0 0 36 36" fill="none" stroke="#cfd3dc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12l10 6-10 6V12z"/><path d="M22 12l10 6-10 6V12z"/></svg></button>
+</div>
+<!--@TEST-->
+<div id="testhud">fps<span id="testdot"></span></div>
+<div id="testlog"><pre id="testlogtext"></pre><div><button id="testcopy">copy</button> <button id="testagain">again</button></div></div>
+<!--@END_TEST-->
+<script src="nk.js"></script>
+</body>
+</html>

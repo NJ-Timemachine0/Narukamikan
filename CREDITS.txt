@@ -1,0 +1,15 @@
+Narukami Hall — Echoes in the Dark (prototype)
+Author: Timemachine0
+
+Voice (Japanese): VOICEVOX:玄野武宏(CV:ガロ)
+  Made with VOICEVOX (https://voicevox.hiroshiba.jp/) / character terms: VirVox Project.
+  English has no voice (subtitles only).
+Art: Created with Grok
+  (inn exterior picture only; not shown on the title lettering.)
+All other sounds are synthesized at runtime with the Web Audio API (no sound-effect files).
+No third-party code or libraries are used.
+
+Fonts (subsets made for this game; SIL Open Font License 1.1, full texts included):
+- Shippori Mincho — Copyright 2021 The Shippori Mincho Project Authors — fonts/OFL-ShipporiMincho.txt
+- EB Garamond — Copyright 2017 The EB Garamond Project Authors — fonts/OFL-EBGaramond.txt
+Control pictures: original artwork for this game.

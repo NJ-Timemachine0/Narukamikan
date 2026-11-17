@@ -1,0 +1,13 @@
+{
+ "_about": "Stage 1 lines. One entry per on-screen line. Japanese: '|' marks the only places a vertical column may break (removed on screen). English: りりー's corrected lines (P0.2). opening = lines shown in this order before the intro bell (later, insert e1a or e1b between s1_line_01 and s1_line_02). autoBellDelaySec = wait this many seconds after the last opening line's subtitle (and voice, if any) has finished, then Tatsuo rings by himself. s1_line_03 follows that bell (trigger first_bell). If the player rings earlier, s1_line_03 waits until the opening list is finished.",
+ "stage": "s1",
+ "opening": ["s1_line_01", "s1_line_02"],
+ "autoBellDelaySec": 1.0,
+ "lines": [
+  {"id": "s1_line_01", "trigger": "start", "ja": "目を開けているのか、|閉じているのかすら|判らない。", "en": "I can't even tell whether my eyes are open or closed."},
+  {"id": "s1_line_02", "trigger": "after:s1_line_01", "ja": "……停電か？", "en": "...A blackout?"},
+  {"id": "s1_line_03", "trigger": "first_bell", "ja": "からりと音が跳ね、|四方の壁が|わずかに|息を吹き返す。", "en": "The chime skips into the dark, and the walls around me faintly breathe back to life."},
+  {"id": "s1_line_04", "trigger": "enter:itanoma", "ja": "隙間から、|冷たく淀んだ|廊下の空気が|滑り込んできた。", "en": "Cold, stale air from the hallway creeps in through the gap."},
+  {"id": "s1_mono_01", "trigger": "heart_lv2_once", "ja": "……動くな。|息を、整えろ。", "en": "...Don't move. Breathe."}
+ ]
+}

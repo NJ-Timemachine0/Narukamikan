@@ -1,0 +1,265 @@
+{
+ "_about": "Prologue (plan 1) from docs/prologue_text_v0.md. No voice. '|' = Japanese wrap points only. Choices c1/c2/c3 saved as nk_pro_c1 etc. Echo lines e1a/e1b/e2a/e3a/e3b/e3c (IDs as in the text; there is no e2b).",
+ "source": "docs/prologue_text_v0.md",
+ "steps": [
+  {
+   "id": "p_01",
+   "wait": "start",
+   "speaker": "tatsuo",
+   "ja": "……終わった。",
+   "en": "...It's finished.",
+   "sfx": [
+    "key_last"
+   ]
+  },
+  {
+   "id": "p_02",
+   "wait": "next",
+   "speaker": "tatsuo",
+   "ja": "長い仕事の|最後のキーから、|指を離す。",
+   "en": "I lift my finger from the last key of a long, long job."
+  },
+  {
+   "id": "c1",
+   "wait": "choice",
+   "A": {
+    "ja": "珈琲を飲む",
+    "en": "Drink the coffee",
+    "line": "p_03a"
+   },
+   "B": {
+    "ja": "窓の外を見る",
+    "en": "Look out the window",
+    "line": "p_03b"
+   }
+  },
+  {
+   "id": "p_03a",
+   "wait": "line",
+   "speaker": "tatsuo",
+   "ja": "冷めきった|珈琲を、|一息に飲む。",
+   "en": "I drink the cold coffee in one gulp.",
+   "choice": "c1",
+   "value": "A"
+  },
+  {
+   "id": "p_03b",
+   "wait": "line",
+   "speaker": "tatsuo",
+   "ja": "窓の外は、|ひどい雨だ。",
+   "en": "Outside, the rain is pouring down.",
+   "choice": "c1",
+   "value": "B"
+  },
+  {
+   "id": "p_04",
+   "wait": "next",
+   "speaker": "tatsuo",
+   "ja": "誰もいない場所で、|ただ眠りたかった。",
+   "en": "All I want is to sleep somewhere no one is around."
+  },
+  {
+   "id": "c2",
+   "wait": "choice",
+   "A": {
+    "ja": "地図を見る",
+    "en": "Check the map",
+    "line": "p_05a"
+   },
+   "B": {
+    "ja": "写真を見る",
+    "en": "Look at the photos",
+    "line": "p_05b"
+   }
+  },
+  {
+   "id": "p_05a",
+   "wait": "line",
+   "speaker": "tatsuo",
+   "ja": "山の奥。|渡り廊下で|つながった、|古い宿。",
+   "en": "Deep in the mountains. An old inn, its buildings linked by covered walkways.",
+   "choice": "c2",
+   "value": "A"
+  },
+  {
+   "id": "p_05b",
+   "wait": "line",
+   "speaker": "tatsuo",
+   "ja": "古い玄関の写真が|一枚だけ。",
+   "en": "Just one photo, of an old entrance.",
+   "choice": "c2",
+   "value": "B"
+  },
+  {
+   "id": "p_06",
+   "wait": "next",
+   "speaker": "tatsuo",
+   "ja": "細い山道を、|どこまでも|登っていく。",
+   "en": "The narrow mountain road climbs on and on.",
+   "sfx": [
+    "car_engine"
+   ]
+  },
+  {
+   "id": "p_07",
+   "wait": "next",
+   "speaker": "tatsuo",
+   "ja": "虫の声さえ、|ここでは|途切れている。",
+   "en": "Even the insects have gone quiet up here.",
+   "sfx": [
+    "gravel_roll",
+    "car_stop"
+   ]
+  },
+  {
+   "id": "inn_pan",
+   "wait": "pan"
+  },
+  {
+   "id": "c3",
+   "wait": "choice",
+   "on": "inn",
+   "A": {
+    "ja": "窓を見上げる",
+    "en": "Look up at the windows",
+    "line": "p_08a"
+   },
+   "B": {
+    "ja": "呼び鈴を探す",
+    "en": "Look for a bell",
+    "line": "p_08b"
+   }
+  },
+  {
+   "id": "p_08a",
+   "wait": "line",
+   "speaker": "tatsuo",
+   "ja": "どの窓も、|固く|閉ざされている。",
+   "en": "Every window is shut tight.",
+   "choice": "c3",
+   "value": "A",
+   "on": "inn"
+  },
+  {
+   "id": "p_08b",
+   "wait": "line",
+   "speaker": "tatsuo",
+   "ja": "呼び鈴は、|どこにもない。",
+   "en": "There's no bell to ring anywhere.",
+   "choice": "c3",
+   "value": "B",
+   "on": "inn"
+  },
+  {
+   "id": "p_09",
+   "wait": "next",
+   "speaker": "tatsuo",
+   "ja": "きしむ戸の|向こうは、|古い木と|埃の匂い。",
+   "en": "Past the creaking door: the smell of old wood and dust.",
+   "sfx": [
+    "door_slide_creak"
+   ],
+   "inn": "fadeout"
+  },
+  {
+   "id": "p_10",
+   "wait": "auto",
+   "speaker": "tatsuo",
+   "ja": "……誰も、|いないのか。",
+   "en": "...Is anyone here?"
+  },
+  {
+   "id": "p_11",
+   "wait": "auto",
+   "speaker": "host",
+   "ja": "……お待ちして|おりました。",
+   "en": "...We have been expecting you."
+  },
+  {
+   "id": "p_12",
+   "wait": "next",
+   "speaker": "host",
+   "ja": "夜に館内を|歩かれる際は、|皆様これを|お持ちいただいて|おります。",
+   "en": "When walking the halls at night, all our guests carry this."
+  },
+  {
+   "id": "p_13",
+   "wait": "next",
+   "speaker": "tatsuo",
+   "ja": "黒ずんだ|真鍮の鍵と、|ひび割れた|土の鈴。",
+   "en": "A tarnished brass key, and a cracked clay bell."
+  },
+  {
+   "id": "p_14",
+   "wait": "auto",
+   "speaker": "tatsuo",
+   "ja": "……生温かい。",
+   "en": "...It's oddly warm."
+  },
+  {
+   "id": "p_15",
+   "wait": "auto",
+   "speaker": "tatsuo",
+   "ja": "その夜は、|深く眠った。",
+   "en": "That night, I sleep deeply.",
+   "fade": "black"
+  }
+ ],
+ "echoes": [
+  {
+   "id": "e1a",
+   "hook": "s1_after_01",
+   "when": {
+    "c1": "A"
+   },
+   "ja": "口に、|冷めた珈琲の|苦さが残っている。",
+   "en": "The bitter taste of cold coffee still lingers in my mouth."
+  },
+  {
+   "id": "e1b",
+   "hook": "s1_after_01",
+   "when": {
+    "c1": "B"
+   },
+   "ja": "あれほど|降っていた|雨の音が、しない。",
+   "en": "All that rain... and now I can't hear it at all."
+  },
+  {
+   "id": "e2a",
+   "hook": "s2_window",
+   "when": {
+    "c3": "A"
+   },
+   "ja": "外から見た、|閉ざされた窓。|その内側に、|今いる。",
+   "en": "The shut windows I saw from outside. Now I'm behind them."
+  },
+  {
+   "id": "e3a",
+   "hook": "s3_lobby",
+   "when": {
+    "c2": "A"
+   },
+   "ja": "地図では、|裏手に|渡り廊下があった。",
+   "en": "On the map, there was a walkway out back."
+  },
+  {
+   "id": "e3b",
+   "hook": "s3_lobby",
+   "when": {
+    "c2": "B"
+   },
+   "ja": "写真で見た玄関だ。|……誰も、|写っていなかった。",
+   "en": "The entrance from the photo. ...No one was in it."
+  },
+  {
+   "id": "e3c",
+   "hook": "s3_desk_bell",
+   "when": {
+    "c3": "B"
+   },
+   "ja": "着いた夜には、|無かったはずの|呼び鈴。",
+   "en": "A bell that wasn't there the night I arrived."
+  }
+ ],
+ "echoGapSec": 2.0
+}

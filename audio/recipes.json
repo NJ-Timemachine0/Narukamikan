@@ -1,0 +1,1472 @@
+{
+ "_about": "Narukami Hall sound recipes (P0.2). Layers with the same name play together as one sound. Required: name, wave (sine|triangle|square|sawtooth|noise), freqHz, durationSec, attackSec, releaseSec, reverbSec, gain. Optional: delaySec, freqEndHz, filterType, filterHz, filterEndHz, filterQ, noise (white|pink|brown), decaySec + sustain (ADSR: attack to gain, decay to gain*sustain, hold until durationSec-releaseSec, release), reverbPreset + reverbMix (IR made at runtime from reverbPresets). bell_*, echo_*, breath_*, faint_* come from art/sound/recipes.json via tools/convert_art_recipes.py. echoModel = distance delay/roll-off + filtered copy of the bell per material. levels = loudness calibration written by tests/calibrate_p02.js so each sound peaks at peakTargetsDb (before the master limiter). Heartbeat: top-level 'heartbeat' (art/sound/heartbeat_for_code.json).",
+ "version": 1,
+ "recipes": [
+  {
+   "name": "step_tatami",
+   "wave": "noise",
+   "freqHz": 1400,
+   "durationSec": 0.21,
+   "attackSec": 0.06,
+   "releaseSec": 0.15,
+   "reverbSec": 0.3,
+   "gain": 0.05,
+   "filterType": "bandpass",
+   "filterQ": 0.9
+  },
+  {
+   "name": "step_wood",
+   "wave": "noise",
+   "freqHz": 900,
+   "durationSec": 0.18,
+   "attackSec": 0.04,
+   "releaseSec": 0.14,
+   "reverbSec": 0.3,
+   "gain": 0.05,
+   "filterType": "bandpass",
+   "filterQ": 1.2
+  },
+  {
+   "name": "step_wood",
+   "wave": "sine",
+   "freqHz": 230,
+   "durationSec": 0.065,
+   "attackSec": 0.003,
+   "releaseSec": 0.06,
+   "reverbSec": 0.3,
+   "gain": 0.03
+  },
+  {
+   "name": "step_stone",
+   "wave": "noise",
+   "freqHz": 2200,
+   "durationSec": 0.18,
+   "attackSec": 0.03,
+   "releaseSec": 0.15,
+   "reverbSec": 0.5,
+   "gain": 0.06,
+   "filterType": "highpass",
+   "filterQ": 0.8
+  },
+  {
+   "name": "touch",
+   "wave": "noise",
+   "freqHz": 1100,
+   "durationSec": 0.12,
+   "attackSec": 0.02,
+   "releaseSec": 0.1,
+   "reverbSec": 0,
+   "gain": 0.07,
+   "filterType": "bandpass",
+   "filterQ": 1.4
+  },
+  {
+   "name": "clear_door",
+   "wave": "noise",
+   "freqHz": 300,
+   "durationSec": 1.15,
+   "attackSec": 0.25,
+   "releaseSec": 0.9,
+   "reverbSec": 1,
+   "gain": 0.12,
+   "filterType": "bandpass",
+   "filterQ": 2,
+   "freqEndHz": 1200
+  },
+  {
+   "name": "heart_lub",
+   "wave": "sine",
+   "freqHz": 52,
+   "freqEndHz": 34,
+   "durationSec": 0.16,
+   "attackSec": 0.004,
+   "releaseSec": 0.13,
+   "reverbSec": 0,
+   "gain": 0.28
+  },
+  {
+   "name": "heart_lub",
+   "wave": "noise",
+   "freqHz": 110,
+   "durationSec": 0.08,
+   "attackSec": 0.002,
+   "releaseSec": 0.06,
+   "reverbSec": 0,
+   "gain": 0.18,
+   "filterType": "lowpass",
+   "filterQ": 0.8
+  },
+  {
+   "name": "heart_dub",
+   "wave": "sine",
+   "freqHz": 68,
+   "freqEndHz": 44,
+   "durationSec": 0.12,
+   "attackSec": 0.003,
+   "releaseSec": 0.09,
+   "reverbSec": 0,
+   "gain": 0.18,
+   "delaySec": 0
+  },
+  {
+   "name": "heart_dub",
+   "wave": "noise",
+   "freqHz": 130,
+   "durationSec": 0.06,
+   "attackSec": 0.002,
+   "releaseSec": 0.045,
+   "reverbSec": 0,
+   "gain": 0.1,
+   "filterType": "lowpass",
+   "filterQ": 0.8,
+   "delaySec": 0
+  },
+  {
+   "name": "heart_tinnitus",
+   "wave": "sine",
+   "freqHz": 8650,
+   "durationSec": 4,
+   "attackSec": 1.5,
+   "releaseSec": 2,
+   "reverbSec": 0,
+   "gain": 0.04
+  },
+  {
+   "name": "heart_tinnitus",
+   "wave": "noise",
+   "freqHz": 9000,
+   "durationSec": 4,
+   "attackSec": 1.5,
+   "releaseSec": 2,
+   "reverbSec": 0,
+   "gain": 0.012,
+   "filterType": "bandpass",
+   "filterQ": 2.5
+  },
+  {
+   "name": "bell_weak",
+   "wave": "noise",
+   "noise": "pink",
+   "freqHz": 2200,
+   "filterType": "bandpass",
+   "filterQ": 2.2,
+   "durationSec": 0.029,
+   "attackSec": 0.001,
+   "decaySec": 0.018,
+   "sustain": 0,
+   "releaseSec": 0.01,
+   "delaySec": 0,
+   "gain": 0.55,
+   "reverbSec": 0,
+   "reverbPreset": "small_room",
+   "reverbMix": 0.1
+  },
+  {
+   "name": "bell_weak",
+   "wave": "noise",
+   "noise": "pink",
+   "freqHz": 1850,
+   "filterType": "bandpass",
+   "filterQ": 2,
+   "durationSec": 0.027,
+   "attackSec": 0.001,
+   "decaySec": 0.016,
+   "sustain": 0,
+   "releaseSec": 0.01,
+   "delaySec": 0.038,
+   "gain": 0.32,
+   "reverbSec": 0,
+   "reverbPreset": "small_room",
+   "reverbMix": 0.1
+  },
+  {
+   "name": "bell_weak",
+   "wave": "noise",
+   "noise": "white",
+   "freqHz": 2600,
+   "filterType": "bandpass",
+   "filterQ": 2.4,
+   "durationSec": 0.023,
+   "attackSec": 0.001,
+   "decaySec": 0.012,
+   "sustain": 0,
+   "releaseSec": 0.01,
+   "delaySec": 0.078,
+   "gain": 0.18,
+   "reverbSec": 0,
+   "reverbPreset": "small_room",
+   "reverbMix": 0.1
+  },
+  {
+   "name": "bell_weak",
+   "wave": "sine",
+   "freqHz": 1040,
+   "freqEndHz": 980,
+   "filterType": "lowpass",
+   "filterHz": 3800,
+   "filterQ": 0.7,
+   "durationSec": 0.384,
+   "attackSec": 0.004,
+   "decaySec": 0.16,
+   "sustain": 0.04,
+   "releaseSec": 0.22,
+   "delaySec": 0,
+   "gain": 0.22,
+   "reverbSec": 0,
+   "reverbPreset": "small_room",
+   "reverbMix": 0.1
+  },
+  {
+   "name": "bell_weak",
+   "wave": "sine",
+   "freqHz": 1510,
+   "freqEndHz": 1420,
+   "filterType": "lowpass",
+   "filterHz": 4000,
+   "filterQ": 0.7,
+   "durationSec": 0.246,
+   "attackSec": 0.006,
+   "decaySec": 0.1,
+   "sustain": 0.02,
+   "releaseSec": 0.14,
+   "delaySec": 0,
+   "gain": 0.08,
+   "reverbSec": 0,
+   "reverbPreset": "small_room",
+   "reverbMix": 0.1
+  },
+  {
+   "name": "bell_weak",
+   "wave": "triangle",
+   "freqHz": 430,
+   "freqEndHz": 390,
+   "filterType": "lowpass",
+   "filterHz": 900,
+   "filterQ": 0.8,
+   "durationSec": 0.188,
+   "attackSec": 0.008,
+   "decaySec": 0.08,
+   "sustain": 0,
+   "releaseSec": 0.1,
+   "delaySec": 0,
+   "gain": 0.05,
+   "reverbSec": 0,
+   "reverbPreset": "small_room",
+   "reverbMix": 0.1
+  },
+  {
+   "name": "bell_strong",
+   "wave": "noise",
+   "noise": "pink",
+   "freqHz": 1900,
+   "filterType": "bandpass",
+   "filterQ": 2,
+   "durationSec": 0.033,
+   "attackSec": 0.001,
+   "decaySec": 0.02,
+   "sustain": 0,
+   "releaseSec": 0.012,
+   "delaySec": 0,
+   "gain": 0.5,
+   "reverbSec": 0,
+   "reverbPreset": "mid_room",
+   "reverbMix": 0.3
+  },
+  {
+   "name": "bell_strong",
+   "wave": "noise",
+   "noise": "pink",
+   "freqHz": 2300,
+   "filterType": "bandpass",
+   "filterQ": 2,
+   "durationSec": 0.033,
+   "attackSec": 0.001,
+   "decaySec": 0.02,
+   "sustain": 0,
+   "releaseSec": 0.012,
+   "delaySec": 0.028,
+   "gain": 0.38,
+   "reverbSec": 0,
+   "reverbPreset": "mid_room",
+   "reverbMix": 0.3
+  },
+  {
+   "name": "bell_strong",
+   "wave": "noise",
+   "noise": "pink",
+   "freqHz": 1750,
+   "filterType": "bandpass",
+   "filterQ": 2,
+   "durationSec": 0.033,
+   "attackSec": 0.001,
+   "decaySec": 0.02,
+   "sustain": 0,
+   "releaseSec": 0.012,
+   "delaySec": 0.055,
+   "gain": 0.46,
+   "reverbSec": 0,
+   "reverbPreset": "mid_room",
+   "reverbMix": 0.3
+  },
+  {
+   "name": "bell_strong",
+   "wave": "noise",
+   "noise": "pink",
+   "freqHz": 2100,
+   "filterType": "bandpass",
+   "filterQ": 2,
+   "durationSec": 0.033,
+   "attackSec": 0.001,
+   "decaySec": 0.02,
+   "sustain": 0,
+   "releaseSec": 0.012,
+   "delaySec": 0.092,
+   "gain": 0.34,
+   "reverbSec": 0,
+   "reverbPreset": "mid_room",
+   "reverbMix": 0.3
+  },
+  {
+   "name": "bell_strong",
+   "wave": "noise",
+   "noise": "pink",
+   "freqHz": 1600,
+   "filterType": "bandpass",
+   "filterQ": 2,
+   "durationSec": 0.033,
+   "attackSec": 0.001,
+   "decaySec": 0.02,
+   "sustain": 0,
+   "releaseSec": 0.012,
+   "delaySec": 0.132,
+   "gain": 0.42,
+   "reverbSec": 0,
+   "reverbPreset": "mid_room",
+   "reverbMix": 0.3
+  },
+  {
+   "name": "bell_strong",
+   "wave": "noise",
+   "noise": "pink",
+   "freqHz": 2400,
+   "filterType": "bandpass",
+   "filterQ": 2,
+   "durationSec": 0.033,
+   "attackSec": 0.001,
+   "decaySec": 0.02,
+   "sustain": 0,
+   "releaseSec": 0.012,
+   "delaySec": 0.178,
+   "gain": 0.28,
+   "reverbSec": 0,
+   "reverbPreset": "mid_room",
+   "reverbMix": 0.3
+  },
+  {
+   "name": "bell_strong",
+   "wave": "noise",
+   "noise": "pink",
+   "freqHz": 1500,
+   "filterType": "bandpass",
+   "filterQ": 2,
+   "durationSec": 0.033,
+   "attackSec": 0.001,
+   "decaySec": 0.02,
+   "sustain": 0,
+   "releaseSec": 0.012,
+   "delaySec": 0.23,
+   "gain": 0.36,
+   "reverbSec": 0,
+   "reverbPreset": "mid_room",
+   "reverbMix": 0.3
+  },
+  {
+   "name": "bell_strong",
+   "wave": "noise",
+   "noise": "pink",
+   "freqHz": 2000,
+   "filterType": "bandpass",
+   "filterQ": 2,
+   "durationSec": 0.033,
+   "attackSec": 0.001,
+   "decaySec": 0.02,
+   "sustain": 0,
+   "releaseSec": 0.012,
+   "delaySec": 0.292,
+   "gain": 0.22,
+   "reverbSec": 0,
+   "reverbPreset": "mid_room",
+   "reverbMix": 0.3
+  },
+  {
+   "name": "bell_strong",
+   "wave": "sine",
+   "freqHz": 312,
+   "freqEndHz": 280,
+   "filterType": "lowpass",
+   "filterHz": 1200,
+   "filterQ": 0.8,
+   "durationSec": 1.56,
+   "attackSec": 0.01,
+   "decaySec": 0.45,
+   "sustain": 0.1,
+   "releaseSec": 1.1,
+   "delaySec": 0,
+   "gain": 0.28,
+   "reverbSec": 0,
+   "reverbPreset": "mid_room",
+   "reverbMix": 0.3
+  },
+  {
+   "name": "bell_strong",
+   "wave": "sine",
+   "freqHz": 624,
+   "freqEndHz": 580,
+   "filterType": "lowpass",
+   "filterHz": 2200,
+   "filterQ": 0.7,
+   "durationSec": 1.158,
+   "attackSec": 0.008,
+   "decaySec": 0.35,
+   "sustain": 0.07,
+   "releaseSec": 0.8,
+   "delaySec": 0,
+   "gain": 0.16,
+   "reverbSec": 0,
+   "reverbPreset": "mid_room",
+   "reverbMix": 0.3
+  },
+  {
+   "name": "bell_strong",
+   "wave": "sine",
+   "freqHz": 890,
+   "freqEndHz": 840,
+   "filterType": "lowpass",
+   "filterHz": 3000,
+   "filterQ": 0.7,
+   "durationSec": 0.81,
+   "attackSec": 0.01,
+   "decaySec": 0.25,
+   "sustain": 0.04,
+   "releaseSec": 0.55,
+   "delaySec": 0,
+   "gain": 0.09,
+   "reverbSec": 0,
+   "reverbPreset": "mid_room",
+   "reverbMix": 0.3
+  },
+  {
+   "name": "bell_strong",
+   "wave": "noise",
+   "noise": "brown",
+   "freqHz": 700,
+   "filterType": "bandpass",
+   "filterQ": 1.1,
+   "durationSec": 0.75,
+   "attackSec": 0.008,
+   "decaySec": 0.18,
+   "sustain": 0.04,
+   "releaseSec": 0.35,
+   "delaySec": 0,
+   "gain": 0.14,
+   "reverbSec": 0,
+   "reverbPreset": "mid_room",
+   "reverbMix": 0.3
+  },
+  {
+   "name": "echo_wood",
+   "wave": "noise",
+   "noise": "white",
+   "freqHz": 920,
+   "filterType": "bandpass",
+   "filterQ": 3.5,
+   "durationSec": 0.035,
+   "attackSec": 0.001,
+   "decaySec": 0.014,
+   "sustain": 0,
+   "releaseSec": 0.02,
+   "delaySec": 0,
+   "gain": 0.55,
+   "reverbSec": 0,
+   "reverbPreset": "dry",
+   "reverbMix": 0.08
+  },
+  {
+   "name": "echo_wood",
+   "wave": "sine",
+   "freqHz": 210,
+   "freqEndHz": 170,
+   "filterType": "lowpass",
+   "filterHz": 800,
+   "filterQ": 0.8,
+   "durationSec": 0.122,
+   "attackSec": 0.002,
+   "decaySec": 0.05,
+   "sustain": 0,
+   "releaseSec": 0.07,
+   "delaySec": 0,
+   "gain": 0.18,
+   "reverbSec": 0,
+   "reverbPreset": "dry",
+   "reverbMix": 0.08
+  },
+  {
+   "name": "echo_cloth",
+   "wave": "noise",
+   "noise": "brown",
+   "freqHz": 420,
+   "filterType": "lowpass",
+   "filterQ": 0.7,
+   "durationSec": 0.114,
+   "attackSec": 0.004,
+   "decaySec": 0.05,
+   "sustain": 0,
+   "releaseSec": 0.06,
+   "delaySec": 0,
+   "gain": 0.4,
+   "reverbSec": 0,
+   "reverbPreset": "dry",
+   "reverbMix": 0.04
+  },
+  {
+   "name": "echo_fusuma",
+   "wave": "noise",
+   "noise": "white",
+   "freqHz": 2400,
+   "filterType": "bandpass",
+   "filterQ": 1.6,
+   "durationSec": 0.047,
+   "attackSec": 0.001,
+   "decaySec": 0.016,
+   "sustain": 0,
+   "releaseSec": 0.03,
+   "delaySec": 0,
+   "gain": 0.42,
+   "reverbSec": 0,
+   "reverbPreset": "dry",
+   "reverbMix": 0.06
+  },
+  {
+   "name": "echo_fusuma",
+   "wave": "triangle",
+   "freqHz": 480,
+   "freqEndHz": 420,
+   "filterType": "lowpass",
+   "filterHz": 1600,
+   "filterQ": 0.8,
+   "durationSec": 0.092,
+   "attackSec": 0.002,
+   "decaySec": 0.04,
+   "sustain": 0,
+   "releaseSec": 0.05,
+   "delaySec": 0,
+   "gain": 0.1,
+   "reverbSec": 0,
+   "reverbPreset": "dry",
+   "reverbMix": 0.06
+  },
+  {
+   "name": "echo_stone",
+   "wave": "noise",
+   "noise": "white",
+   "freqHz": 3200,
+   "filterType": "bandpass",
+   "filterQ": 2.8,
+   "durationSec": 0.033,
+   "attackSec": 0.001,
+   "decaySec": 0.012,
+   "sustain": 0,
+   "releaseSec": 0.02,
+   "delaySec": 0,
+   "gain": 0.5,
+   "reverbSec": 0,
+   "reverbPreset": "small_room",
+   "reverbMix": 0.18
+  },
+  {
+   "name": "echo_stone",
+   "wave": "sine",
+   "freqHz": 1480,
+   "freqEndHz": 1320,
+   "filterType": "lowpass",
+   "filterHz": 5000,
+   "filterQ": 0.7,
+   "durationSec": 0.503,
+   "attackSec": 0.003,
+   "decaySec": 0.18,
+   "sustain": 0.05,
+   "releaseSec": 0.32,
+   "delaySec": 0,
+   "gain": 0.16,
+   "reverbSec": 0,
+   "reverbPreset": "small_room",
+   "reverbMix": 0.18
+  },
+  {
+   "name": "echo_stone",
+   "wave": "sine",
+   "freqHz": 260,
+   "freqEndHz": 230,
+   "filterType": "lowpass",
+   "filterHz": 900,
+   "filterQ": 0.7,
+   "durationSec": 0.324,
+   "attackSec": 0.004,
+   "decaySec": 0.12,
+   "sustain": 0.03,
+   "releaseSec": 0.2,
+   "delaySec": 0,
+   "gain": 0.1,
+   "reverbSec": 0,
+   "reverbPreset": "small_room",
+   "reverbMix": 0.18
+  },
+  {
+   "name": "echo_mud",
+   "wave": "noise",
+   "noise": "brown",
+   "freqHz": 280,
+   "filterType": "bandpass",
+   "filterQ": 1.1,
+   "durationSec": 0.144,
+   "attackSec": 0.004,
+   "decaySec": 0.06,
+   "sustain": 0,
+   "releaseSec": 0.08,
+   "delaySec": 0,
+   "gain": 0.36,
+   "reverbSec": 0,
+   "reverbPreset": "dry",
+   "reverbMix": 0.05
+  },
+  {
+   "name": "echo_mud",
+   "wave": "sine",
+   "freqHz": 140,
+   "freqEndHz": 110,
+   "filterType": "lowpass",
+   "filterHz": 400,
+   "filterQ": 0.7,
+   "durationSec": 0.158,
+   "attackSec": 0.008,
+   "decaySec": 0.07,
+   "sustain": 0,
+   "releaseSec": 0.08,
+   "delaySec": 0,
+   "gain": 0.08,
+   "reverbSec": 0,
+   "reverbPreset": "dry",
+   "reverbMix": 0.05
+  },
+  {
+   "name": "breath_recover",
+   "wave": "noise",
+   "noise": "pink",
+   "freqHz": 1600,
+   "filterType": "bandpass",
+   "filterQ": 0.9,
+   "durationSec": 1.5,
+   "attackSec": 0.18,
+   "decaySec": 0,
+   "sustain": 0.85,
+   "releaseSec": 0.2,
+   "delaySec": 0,
+   "gain": 0.28,
+   "reverbSec": 0,
+   "reverbPreset": "dry",
+   "reverbMix": 0.04
+  },
+  {
+   "name": "breath_recover",
+   "wave": "noise",
+   "noise": "brown",
+   "freqHz": 700,
+   "filterType": "bandpass",
+   "filterQ": 0.9,
+   "durationSec": 1.98,
+   "attackSec": 0.2,
+   "decaySec": 0,
+   "sustain": 0.8,
+   "releaseSec": 0.28,
+   "delaySec": 1.5,
+   "gain": 0.36,
+   "reverbSec": 0,
+   "reverbPreset": "dry",
+   "reverbMix": 0.04
+  },
+  {
+   "name": "breath_shallow",
+   "wave": "noise",
+   "noise": "white",
+   "freqHz": 2200,
+   "filterType": "bandpass",
+   "filterQ": 1.1,
+   "durationSec": 0.3,
+   "attackSec": 0.04,
+   "decaySec": 0,
+   "sustain": 0.7,
+   "releaseSec": 0.08,
+   "delaySec": 0,
+   "gain": 0.22,
+   "reverbSec": 0,
+   "reverbPreset": "dry",
+   "reverbMix": 0.03
+  },
+  {
+   "name": "breath_shallow",
+   "wave": "noise",
+   "noise": "pink",
+   "freqHz": 1400,
+   "filterType": "bandpass",
+   "filterQ": 1,
+   "durationSec": 0.4,
+   "attackSec": 0.05,
+   "decaySec": 0,
+   "sustain": 0.6,
+   "releaseSec": 0.1,
+   "delaySec": 0.28,
+   "gain": 0.16,
+   "reverbSec": 0,
+   "reverbPreset": "dry",
+   "reverbMix": 0.03
+  },
+  {
+   "name": "faint_out",
+   "wave": "noise",
+   "noise": "brown",
+   "freqHz": 500,
+   "filterType": "lowpass",
+   "freqEndHz": 120,
+   "filterQ": 0.8,
+   "durationSec": 0.95,
+   "attackSec": 0.05,
+   "decaySec": 0.4,
+   "sustain": 0,
+   "releaseSec": 0.5,
+   "delaySec": 0,
+   "gain": 0.22,
+   "reverbSec": 0
+  },
+  {
+   "name": "faint_in",
+   "wave": "noise",
+   "noise": "brown",
+   "freqHz": 240,
+   "filterType": "lowpass",
+   "filterQ": 0.7,
+   "durationSec": 2.4,
+   "attackSec": 0.8,
+   "decaySec": 0,
+   "sustain": 0.6,
+   "releaseSec": 0.4,
+   "delaySec": 0,
+   "gain": 0.4,
+   "reverbSec": 0
+  }
+ ],
+ "heartbeat": {
+  "id": "heartbeat",
+  "name_ja": "心拍（ドクン）",
+  "format_note": "音の層はこーどの recipes.json と同じ項目（name, wave, freqHz, durationSec, attackSec, releaseSec, reverbSec, gain、任意で delaySec / freqEndHz / filterType / filterQ）。層の name は heart_lub と heart_dub。ゲームは拍の先頭で heart_lub を、period*dubOffsetRatio のあとに heart_dub を予約する（K6。setTimeout は使わない）。層の数字は始まり（72BPM / Lv0）の基準値。段階・BPM の係数をかけて使う。",
+  "plan": {
+   "start_bpm": 72,
+   "floor_bpm": 70,
+   "max_bpm": 180,
+   "levels": "Lv0 平常 65–89 / Lv1 警戒 90–129 / Lv2 恐怖 130–159 / Lv3 恐慌 160–179。180 は企画どおり心停止。Stage 1 だけは気を失って再開（決定済み1）。",
+   "source": "plan_v0.md 1-3 と文章の段階。ゲームの CONFIG.heart も start 72 / floor 70 / max 180。"
+  },
+  "pattern": {
+   "kind": "lub-dub",
+   "lub_name": "heart_lub",
+   "dub_name": "heart_dub",
+   "dubOffsetRatio": 0.3,
+   "note": "音はいつも2打。ルブ（ド）が拍の先頭、ダブ（クン）は周期の 30%。180BPM（周期 0.333秒）でもダブは約 0.100秒後。画面の脈動はルブだけ（下記 visual）。"
+  },
+  "schedule": {
+   "use_audio_context_time": true,
+   "lookahead_sec": 0.2,
+   "no_setTimeout": true,
+   "period_sec": "60 / bpm",
+   "dub_delay_sec": "(60 / bpm) * 0.30"
+  },
+  "master": {
+   "limiter_ceiling_db": -6,
+   "peak_db_cap_before_limiter": -8,
+   "spatial": "center_internal"
+  },
+  "formulas": {
+   "period_sec": "60 / bpm",
+   "dub_delay_sec": "(60 / bpm) * 0.30",
+   "gain_scale": "lerp(0.70, 1.20, clamp((bpm - 72) / 108, 0, 1))  // 72→180",
+   "peak_db": "lerp(-18, -10, clamp((bpm - 72) / 108, 0, 1))",
+   "freq_scale": "lerp(1.00, 0.82, clamp((bpm - 72) / 108, 0, 1))  // 上がるほど少し低く、胴に寄る",
+   "lowpass_hz": "lerp(160, 90, clamp((bpm - 72) / 108, 0, 1))  // 低域（ローエンド）が前に出る",
+   "tinnitus": "bpm >= 160"
+  },
+  "stages": [
+   {
+    "id": "Lv0",
+    "name_ja": "平常（ふつう）",
+    "name_en": "normal",
+    "bpm_min": 65,
+    "bpm_max": 89,
+    "typical_bpm": 72,
+    "period_sec": 0.833,
+    "dub_delay_sec": 0.25,
+    "flashes_per_sec_if_both_thumps": 2.4,
+    "gain_scale": 0.7,
+    "peak_db": -18,
+    "freq_scale": 1,
+    "lowpass_hz": 160,
+    "tinnitus": false,
+    "feel": "遠く、体の奥で小さくドクン。低域は控えめで、邪魔をしない。"
+   },
+   {
+    "id": "Lv1",
+    "name_ja": "警戒（落ち着かない）",
+    "name_en": "nervous",
+    "bpm_min": 90,
+    "bpm_max": 129,
+    "typical_bpm": 110,
+    "period_sec": 0.545,
+    "dub_delay_sec": 0.164,
+    "flashes_per_sec_if_both_thumps": 3.67,
+    "gain_scale": 0.85,
+    "peak_db": -15.5,
+    "freq_scale": 0.94,
+    "lowpass_hz": 140,
+    "tinnitus": false,
+    "feel": "少し近く、少し低い。間隔が詰まって聞こえる。"
+   },
+   {
+    "id": "Lv2",
+    "name_ja": "恐怖",
+    "name_en": "fear",
+    "bpm_min": 130,
+    "bpm_max": 159,
+    "typical_bpm": 140,
+    "period_sec": 0.429,
+    "dub_delay_sec": 0.129,
+    "flashes_per_sec_if_both_thumps": 4.67,
+    "gain_scale": 1,
+    "peak_db": -13,
+    "freq_scale": 0.88,
+    "lowpass_hz": 120,
+    "tinnitus": false,
+    "feel": "耳の近く、低音が厚い。まだ2打は聞き分けられる。",
+    "visual_note": "150BPM 以上は、画面の脈動の出し方を切り替える（音の2打はそのまま）。pulse_notes.md を見る。"
+   },
+   {
+    "id": "Lv3",
+    "name_ja": "恐慌（気を失う直前）",
+    "name_en": "panic_near_faint",
+    "bpm_min": 160,
+    "bpm_max": 179,
+    "typical_bpm": 170,
+    "period_sec": 0.353,
+    "dub_delay_sec": 0.106,
+    "flashes_per_sec_if_both_thumps": 5.67,
+    "gain_scale": 1.15,
+    "peak_db": -10.5,
+    "freq_scale": 0.84,
+    "lowpass_hz": 100,
+    "tinnitus": true,
+    "feel": "大きく、低く、速い。ダブはルブに近づく。耳鳴りを小さく足す。痛くしない（−8dB を超えない）。"
+   },
+   {
+    "id": "cap",
+    "name_ja": "上限 180（Stage 1 は気を失う）",
+    "name_en": "faint_cap",
+    "bpm_min": 180,
+    "bpm_max": 180,
+    "typical_bpm": 180,
+    "period_sec": 0.333,
+    "dub_delay_sec": 0.1,
+    "flashes_per_sec_if_both_thumps": 6,
+    "gain_scale": 1.2,
+    "peak_db": -10,
+    "freq_scale": 0.82,
+    "lowpass_hz": 90,
+    "tinnitus": true,
+    "feel": "音は最後の1〜2拍を残してから faint_out へ。画面は拍に合わせたフラッシュをしない。"
+   }
+  ],
+  "visual_sync": {
+   "flash_on": "lub_only",
+   "never_on_dub": true,
+   "reason": "180BPM でルブとダブの両方を光らせると 1秒に6回になり、制限（1秒に3回）を超える。光は1拍につき1回、最初の打（ルブ）だけ。",
+   "reference": "WCAG 2.3.1 Three Flashes or Below Threshold (Level A). https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html",
+   "detail_file": "/workspace/narukamikan/art/fx/pulse_notes.md",
+   "above_150_bpm": {
+    "from_bpm": 150,
+    "to_bpm": 160,
+    "t": "clamp((bpm - 150) / 10, 0, 1)",
+    "sync_weight": "1 - t",
+    "swell_weight": "t",
+    "swell_period_sec": 1.6,
+    "swell_hz": 0.625,
+    "attack_sec_min": 0.4,
+    "above_160_sync": 0,
+    "note": "鋭いフラッシュをやめ、ゆっくりした明暗へ。音のルブ＋ダブはそのまま。"
+   },
+   "intensities_artistic_0_to_1": {
+    "Lv0": 0.162,
+    "Lv1_lub": 0.558,
+    "Lv2_lub_below_150": 0.9,
+    "over_150_swell": 0.648
+   },
+   "measured_relative_luminance_delta_on_room_preview": {
+    "Lv1 lub vs between（部屋の上）": {
+     "max_delta": 0.0123,
+     "center_max_delta": 0.0077
+    },
+    "Lv2 lub vs between（部屋の上）": {
+     "max_delta": 0.0172,
+     "center_max_delta": 0.0109
+    },
+    "150超 明 vs 暗（部屋の上）": {
+     "max_delta": 0.0053,
+     "center_max_delta": 0.0043
+    },
+    "Lv2 lub vs Lv0（部屋の上）": {
+     "max_delta": 0.0249,
+     "center_max_delta": 0.0152
+    }
+   }
+  },
+  "tinnitus_name": "heart_tinnitus",
+  "layers_are_reference_at": "72 BPM / Lv0。gain には stages[].gain_scale を掛け、freqHz と freqEndHz には freq_scale を掛け、ノイズ層の freqHz（ローパスの位置）は stages[].lowpass_hz に近づける。",
+  "visual_sync_v1_1": {
+   "version": "v1.1",
+   "applies_to": "Lv3（160–179BPM）。180 の暗転は従来どおり。",
+   "replaces": "visual_sync の 150超・Lv3 の強度 0.65（Lv2 の 0.90 より弱く見えた点）。P0.2 がいま使っている数字は visual_sync のまま。こちらは後から差し替える。",
+   "fixed_vignette": {
+    "inner_radius": 0.22,
+    "outer_radius": 1.14,
+    "intensity": 0.88,
+    "note": "端の暗いビネットが、より内側まで広がり、その位置（半径）は固定。点滅しない。明側でもビネットは引っ込めない。"
+   },
+   "slow_cycle": {
+    "period_sec": 1.6,
+    "hz": 0.625,
+    "attack_sec_min": 0.4,
+    "light_extra_intensity": 0,
+    "dark_extra_intensity": 0.45,
+    "effective_scale_light": 0.88,
+    "effective_scale_dark": 1.33,
+    "note": "同じマスクの深さだけをゆっくり変える。暗い側をより深くする。半径は変えないのでフラッシュに見えない。"
+   },
+   "luminance_on_room": {
+    "v2 Lv3 暗 vs 明（部屋の上）": {
+     "max_delta": 0.0159,
+     "center_max_delta": 0.0159,
+     "max_L": 0.1073
+    },
+    "v2 Lv3 暗 vs Lv2 ルブ": {
+     "max_delta": 0.0563,
+     "center_max_delta": 0.0562,
+     "max_L": 0.1073
+    },
+    "v2 Lv3 明 vs Lv2 ルブ": {
+     "max_delta": 0.0419,
+     "center_max_delta": 0.0414,
+     "max_L": 0.1073
+    },
+    "v1 150超 明 vs 暗（再掲）": {
+     "max_delta": 0.0053,
+     "center_max_delta": 0.0043,
+     "max_L": 0.1073
+    },
+    "v2 暗 vs v1 暗": {
+     "max_delta": 0.0468,
+     "center_max_delta": 0.0468,
+     "max_L": 0.1073
+    },
+    "v2 固定ビネット（明側） vs Lv0": {
+     "max_delta": 0.0419,
+     "center_max_delta": 0.0414,
+     "max_L": 0.1073
+    }
+   },
+   "wcag_ref": "WCAG 2.3.1 Three Flashes or Below Threshold",
+   "still_under_0_10": true
+  },
+  "visual_sync_v1_2": {
+   "version": "v1.2",
+   "applies_to": "Lv3（160–179BPM）。180 の暗転は従来どおり。",
+   "replaces": "visual_sync_v1_1 の端がほぼ黒（例：RGB 10,5,7）になり、赤黒が見えにくくなった点。息苦しさ（内半径 0.22 の固定ビネット、点滅なし）は維持する。",
+   "does_not_overwrite": "visual_sync と visual_sync_v1_1 はそのまま。",
+   "fixed_vignette": {
+    "inner_radius": 0.22,
+    "outer_radius": 1.14,
+    "note": "v1.1 と同じ。半径は固定。明側でも引っ込めない。点滅しない。"
+   },
+   "slow_cycle": {
+    "period_sec": 1.6,
+    "hz": 0.625,
+    "attack_sec_min": 0.4,
+    "amount_light": 0.8,
+    "amount_dark": 0.9,
+    "note": "同じマスクの深さだけをゆっくり変える。半径は変えない。"
+   },
+   "edge_color": {
+    "model": "端は純黒へ落とさず、低彩度の赤黒（ワインレッドに近い黒）へ寄せる。液体・しずくの形は使わない。",
+    "floor_dark_srgb": [
+     36,
+     16,
+     18
+    ],
+    "floor_light_srgb": [
+     50,
+     24,
+     26
+    ],
+    "rim_dark_srgb": [
+     48,
+     20,
+     22
+    ],
+    "rim_light_srgb": [
+     62,
+     28,
+     30
+    ],
+    "rim_center": 0.96,
+    "measured_on_room": {
+     "v3_dark_edge_band_mean": {
+      "rgb": [
+       39,
+       18,
+       19
+      ],
+      "hsv_sat": 0.538,
+      "r_share": 0.513
+     },
+     "v3_light_edge_band_mean": {
+      "rgb": [
+       50,
+       25,
+       26
+      ],
+      "hsv_sat": 0.5,
+      "r_share": 0.495
+     },
+     "v3_dark_left_mid": {
+      "rgb": [
+       43,
+       20,
+       21
+      ],
+      "hsv_sat": 0.535,
+      "r_share": 0.512
+     },
+     "v3_dark_top_mid": {
+      "rgb": [
+       45,
+       21,
+       22
+      ],
+      "hsv_sat": 0.533,
+      "r_share": 0.511
+     },
+     "v3_light_left_mid": {
+      "rgb": [
+       55,
+       27,
+       28
+      ],
+      "hsv_sat": 0.509,
+      "r_share": 0.5
+     },
+     "v3_light_top_mid": {
+      "rgb": [
+       57,
+       29,
+       29
+      ],
+      "hsv_sat": 0.491,
+      "r_share": 0.496
+     },
+     "v2_dark_edge_band_mean": {
+      "rgb": [
+       10,
+       5,
+       6
+      ],
+      "hsv_sat": 0.5,
+      "r_share": 0.476
+     }
+    },
+    "safety": "R/(R+G+B) は飽和した赤の目安 0.80 より十分下。彩度は低め。"
+   },
+   "luminance_on_room": {
+    "v3 Lv3 暗 vs 明（部屋の上）": {
+     "max_delta": 0.009,
+     "center_max_delta": 0.0086,
+     "max_L": 0.1057
+    },
+    "v3 Lv3 暗 vs v2 暗": {
+     "max_delta": 0.0198,
+     "center_max_delta": 0.0198,
+     "max_L": 0.1073
+    },
+    "v3 Lv3 明 vs v2 明": {
+     "max_delta": 0.0137,
+     "center_max_delta": 0.013,
+     "max_L": 0.1073
+    },
+    "v3 Lv3 暗 vs Lv2 ルブ": {
+     "max_delta": 0.0369,
+     "center_max_delta": 0.0369,
+     "max_L": 0.1073
+    },
+    "v3 Lv3 明 vs Lv2 ルブ": {
+     "max_delta": 0.0294,
+     "center_max_delta": 0.0293,
+     "max_L": 0.1073
+    },
+    "v2 Lv3 暗 vs 明（再掲）": {
+     "max_delta": 0.0159,
+     "center_max_delta": 0.0159,
+     "max_L": 0.1073
+    }
+   },
+   "wcag_ref": "WCAG 2.3.1 Three Flashes or Below Threshold",
+   "still_under_0_10": true
+  },
+  "visual_sync_v1_3": {
+   "version": "v1.3",
+   "applies_to": "Lv3（160–179BPM）。180 の暗転は従来どおり。",
+   "replaces": "visual_sync_v1_2 の端が v2 より明るく、赤茶色の平坦な枠に見えた点。息苦しさ（外側からの黒）を戻し、赤黒は端のすぐ内側の帯だけにする。",
+   "does_not_overwrite": "visual_sync、visual_sync_v1_1、visual_sync_v1_2 はそのまま。",
+   "intent": "闇が外から迫り、その縁だけが赤黒く脈打つ。帯は 1.6 秒のゆっくりした明暗に合わせ、拍には同期しない。",
+   "fixed_vignette": {
+    "inner_radius": 0.22,
+    "outer_radius": 1.14,
+    "amount": 1,
+    "note": "v1.1 と同じ内向きの固定ビネット。半径は固定。点滅しない。明暗の周期では動かさない（帯だけが脈打つ）。"
+   },
+   "outer_black_rim": {
+    "black_start": 0.92,
+    "black_full": 1.02,
+    "target_srgb": [
+     10,
+     5,
+     6
+    ],
+    "note": "画面のいちばん外側は v2 の黒（約 RGB 10,5,6）か、それより暗い。明るい枠にしない。"
+   },
+   "red_black_band": {
+    "inner_radius": 0.4,
+    "peak_radius": 0.88,
+    "outer_radius": 0.96,
+    "wine_dark_srgb": [
+     40,
+     16,
+     18
+    ],
+    "wine_light_srgb": [
+     58,
+     26,
+     28
+    ],
+    "amount_dark": 0.55,
+    "amount_light": 0.48,
+    "shape": "外側は従来どおり（ガウス×smoothstep）。内側は内半径 0.4 まで広げ、smootherstep でなだらかに落とす。輪に見えないようにする。液体・しずくの形は使わない。",
+    "throbs": "1.6秒周期のゆっくりした明暗だけ。拍（ルブ）には合わせない。"
+   },
+   "slow_cycle": {
+    "period_sec": 1.6,
+    "hz": 0.625,
+    "attack_sec_min": 0.4,
+    "applies_to": "red_black_band only"
+   },
+   "measured_on_room": {
+    "outer_edge_dark": {
+     "rgb": [
+      10,
+      5,
+      6
+     ],
+     "hsv_sat": 0.5,
+     "r_share": 0.476
+    },
+    "outer_edge_light": {
+     "rgb": [
+      10,
+      5,
+      6
+     ],
+     "hsv_sat": 0.5,
+     "r_share": 0.476
+    },
+    "outer_left_mid_dark": {
+     "rgb": [
+      10,
+      5,
+      6
+     ],
+     "hsv_sat": 0.5,
+     "r_share": 0.476
+    },
+    "outer_left_mid_light": {
+     "rgb": [
+      10,
+      5,
+      6
+     ],
+     "hsv_sat": 0.5,
+     "r_share": 0.476
+    },
+    "band_peak_dark": {
+     "rgb": [
+      28,
+      13,
+      14
+     ],
+     "hsv_sat": 0.536,
+     "r_share": 0.509
+    },
+    "band_peak_light": {
+     "rgb": [
+      35,
+      18,
+      18
+     ],
+     "hsv_sat": 0.486,
+     "r_share": 0.493
+    },
+    "band_peak_dark_before": {
+     "rgb": [
+      28,
+      13,
+      14
+     ],
+     "hsv_sat": 0.536,
+     "r_share": 0.509
+    },
+    "band_peak_light_before": {
+     "rgb": [
+      35,
+      18,
+      18
+     ],
+     "hsv_sat": 0.486,
+     "r_share": 0.493
+    }
+   },
+   "luminance_on_room": {
+    "v1_3 軟化後 暗 vs 明": {
+     "max_delta": 0.0039,
+     "center_max_delta": 0.0029,
+     "max_L": 0.1073
+    },
+    "軟化後 暗 vs 軟化前 暗": {
+     "max_delta": 0.0045,
+     "center_max_delta": 0.0028,
+     "max_L": 0.1073
+    },
+    "軟化後 明 vs 軟化前 明": {
+     "max_delta": 0.0031,
+     "center_max_delta": 0.0029,
+     "max_L": 0.1073
+    },
+    "軟化後 暗 vs v2 暗": {
+     "max_delta": 0.0108,
+     "center_max_delta": 0.0108,
+     "max_L": 0.1073
+    },
+    "軟化後 暗 vs v3 暗": {
+     "max_delta": 0.0141,
+     "center_max_delta": 0.0121,
+     "max_L": 0.1073
+    },
+    "軟化後 暗 vs Lv2 ルブ": {
+     "max_delta": 0.0487,
+     "center_max_delta": 0.0478,
+     "max_L": 0.1073
+    }
+   },
+   "wcag_ref": "WCAG 2.3.1 Three Flashes or Below Threshold",
+   "still_under_0_10": true,
+   "red_ratio_under_0_80": true,
+   "inner_edge_softening": {
+    "note": "ぷらん承認後の小さな修正。内側がわずかに楕円の輪に見えたため、内側の落ち方だけを広げた。新しいキーは作っていない。",
+    "inner_radius_before": 0.62,
+    "inner_radius_after": 0.4,
+    "inner_curve": "smootherstep（Perlin。端点で1次・2次微分が0）",
+    "unchanged": "いちばん外側の黒、帯のピーク位置と色、外側の落ち方、1.6秒周期。",
+    "backup": "/workspace/narukamikan/art/work/v1_3_before_softedge"
+   }
+  }
+ },
+ "busEffects": {
+  "faint_out": {
+   "type": "fade_and_filter_master",
+   "fade_out_sec": 1.5,
+   "fade_curve": "exp",
+   "lowpass_start_hz": 8000,
+   "lowpass_end_hz": 200,
+   "gain_end": 0,
+   "hold_silence_sec": 3,
+   "note": "新規の効果音を足すより、マスターにローパスとフェードをかける。心拍は1〜2拍だけ残してから消してよい。"
+  },
+  "faint_in": {
+   "type": "fade_in_ambience",
+   "fade_in_sec": 1.6,
+   "fade_curve": "exp",
+   "lowpass_start_hz": 300,
+   "lowpass_end_hz": 8000,
+   "restart": [
+    "amb_room",
+    "heartbeat",
+    "amb_draft_if_in_range"
+   ],
+   "heart_bpm_on_resume": "その部屋の下限（普段 70）付近から再開する、はこーど／ぷらんが数字を確定。"
+  }
+ },
+ "reverbPresets": {
+  "dry": {
+   "duration_sec": 0.08,
+   "decay_sec": 0.06,
+   "pre_delay_sec": 0,
+   "lowpass_hz": 8000,
+   "highpass_hz": 80,
+   "density": 0.3,
+   "use": "ほぼ残響なし（ weakly の鈴本体向き）"
+  },
+  "small_room": {
+   "duration_sec": 0.55,
+   "decay_sec": 0.35,
+   "pre_delay_sec": 0.008,
+   "lowpass_hz": 4500,
+   "highpass_hz": 90,
+   "density": 0.7,
+   "use": "寝室・小さい和室（白鷺の間の寝室）"
+  },
+  "mid_room": {
+   "duration_sec": 1.1,
+   "decay_sec": 0.75,
+   "pre_delay_sec": 0.014,
+   "lowpass_hz": 3800,
+   "highpass_hz": 80,
+   "density": 0.8,
+   "use": "本間くらいの広さ。土鈴：強の空間の残り。"
+  },
+  "hall": {
+   "duration_sec": 1.8,
+   "decay_sec": 1.3,
+   "pre_delay_sec": 0.022,
+   "lowpass_hz": 3200,
+   "highpass_hz": 70,
+   "density": 0.85,
+   "use": "Stage 3 大広間用。Stage 1 では使わない。"
+  }
+ },
+ "echoModel": {
+  "echo_wood": {
+   "play": true,
+   "delayPerM": 0.003,
+   "delayMaxSec": 0.08,
+   "gainRefM": 2,
+   "rollOff": 0.25,
+   "source": {
+    "filterType": "bandpass",
+    "freqHz": 900,
+    "q": 1.8,
+    "gain": 0.22,
+    "decaySec": 0.12
+   }
+  },
+  "echo_cloth": {
+   "play": true,
+   "delayPerM": 0.003,
+   "delayMaxSec": 0.08,
+   "gainRefM": 2,
+   "rollOff": 0.25,
+   "source": {
+    "filterType": "lowpass",
+    "freqHz": 380,
+    "q": 0.7,
+    "gain": 0.1,
+    "decaySec": 0.08
+   }
+  },
+  "echo_fusuma": {
+   "play": true,
+   "delayPerM": 0.003,
+   "delayMaxSec": 0.08,
+   "gainRefM": 2,
+   "rollOff": 0.25,
+   "source": {
+    "filterType": "bandpass",
+    "freqHz": 2000,
+    "q": 1.2,
+    "gain": 0.16,
+    "decaySec": 0.1
+   }
+  },
+  "echo_stone": {
+   "play": true,
+   "delayPerM": 0.003,
+   "delayMaxSec": 0.08,
+   "gainRefM": 2,
+   "rollOff": 0.25,
+   "source": {
+    "filterType": "highpass",
+    "freqHz": 600,
+    "q": 0.7,
+    "gain": 0.24,
+    "decaySec": 0.35
+   }
+  },
+  "echo_void": {
+   "play": false
+  },
+  "echo_mud": {
+   "play": true,
+   "delayPerM": 0.003,
+   "delayMaxSec": 0.08,
+   "gainRefM": 2,
+   "rollOff": 0.25,
+   "source": {
+    "filterType": "lowpass",
+    "freqHz": 260,
+    "q": 0.8,
+    "gain": 0.08,
+    "decaySec": 0.1
+   }
+  }
+ },
+ "peakTargetsDb": {
+  "bell_weak": -12,
+  "bell_strong": -7.5,
+  "echo_wood": -16,
+  "echo_cloth": -22,
+  "echo_fusuma": -18,
+  "echo_stone": -14,
+  "echo_mud": -20,
+  "breath_recover": -20,
+  "breath_shallow": -26,
+  "faint_out": -12,
+  "faint_in": -28,
+  "heart_lub@72": -18,
+  "heart_tinnitus": -28
+ },
+ "levels": {
+  "bell_weak": 1.0737,
+  "bell_strong": 1.2385,
+  "echo_wood": 1.088,
+  "echo_cloth": 1.1503,
+  "echo_fusuma": 1.2719,
+  "echo_stone": 1.1095,
+  "echo_mud": 1.9312,
+  "breath_recover": 1.1258,
+  "breath_shallow": 0.4651,
+  "faint_out": 3.2327,
+  "faint_in": 0.2741,
+  "heart_lub": 0.6108,
+  "heart_tinnitus": 1.4075,
+  "heart_dub": 0.6108
+ }
+}

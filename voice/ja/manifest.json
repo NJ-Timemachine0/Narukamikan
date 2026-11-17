@@ -1,0 +1,31 @@
+{
+ "speaker": "VOICEVOX:玄野武宏",
+ "style_id": 11,
+ "lines": {
+  "s1_line_01": {
+   "ogg": "s1_line_01.ogg",
+   "m4a": "s1_line_01.m4a",
+   "sec": 3.99
+  },
+  "s1_line_02": {
+   "ogg": "s1_line_02.ogg",
+   "m4a": "s1_line_02.m4a",
+   "sec": 1.44
+  },
+  "s1_line_03": {
+   "ogg": "s1_line_03.ogg",
+   "m4a": "s1_line_03.m4a",
+   "sec": 4.81
+  },
+  "s1_line_04": {
+   "ogg": "s1_line_04.ogg",
+   "m4a": "s1_line_04.m4a",
+   "sec": 4.78
+  },
+  "s1_mono_01": {
+   "ogg": "s1_mono_01.ogg",
+   "m4a": "s1_mono_01.m4a",
+   "sec": 3.58
+  }
+ }
+}
