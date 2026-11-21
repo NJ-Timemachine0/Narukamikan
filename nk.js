@@ -1,4 +1,4 @@
-/* Narukami Hall — Echoes in the Dark / prototype / Timemachine0
+/* Narukami Hall: Ring Once, Then Listen / prototype / Timemachine0
    Plain JS + Canvas 2D + Web Audio. No libraries, no audio files.
    Blocks between TEST markers exist only in the test build; tools/build_public.py removes them. */
 (function () {
@@ -12,8 +12,25 @@ var CONFIG = {
   input: { strongHold: 0.4 /* hold >= 0.4 s = strong; released earlier = weak (plan: weak < 0.25 s) */, dragDeadzonePx: 10 },
   bell: {
     weak:   { radius: 2.0,  afterglow: 3.5, rays: 36, cooldown: 0.4, bpm: 2,  vibrateMs: 20 },
-    strong: { radius: 15.0, afterglow: 5.0, rays: 72, cooldown: 2.0, bpm: 14, vibrateMs: 20 }
+    strong: { radius: 15.0, afterglow: 5.0, rays: 72, cooldown: 2.0, bpm: 14, vibrateMs: 20 },
+    // radius / rays = how far the SOUND reaches (echoes are the same on every difficulty). What is SHOWN is in CONFIG.difficulty.
+    // Bell life "B: cracks" (ぷらん docs/opening_difficulty_v0.md ch. 3). Every number for DR3 tuning lives here.
+    life: { max: 100, weakCost: 3, strongCost: 20, strongMin: 20 /* strong needs >= this, else dull sound, no cost */,
+            regenDelaySec: 1.0 /* after the last ring */, regenPerSec: { easy: 3, normal: 2, hard: 1.5 },
+            breakSec: 10 /* at 0: about to break, no strong */, afterBreak: 20 /* durability after the break time */,
+            crack1Below: 67 /* 66..34 = 1 crack */, crack2Below: 34 /* 33..1 = 2 cracks */, muddyAtOrBelow: 33,
+            muddyLowpassHz: 3200 /* <= 33: a little muddy */, brokenLowpassHz: 1500, brokenGain: 0.8, brokenCutSec: 0.45 /* short + muddy, materials still heard */,
+            dullLowpassHz: 900, dullGain: 0.9 /* strong refused: dull 'kasu' (touch sound, filtered) */,
+            iconShakePx: 0.7 /* about to break: icon dark + trembles, never blinks */, iconDim: 0.45 }
   },
+  // ぷらん docs/opening_difficulty_v0.md ch. 2. Sound is identical on all three; only what is shown changes.
+  // easy = P0.3 visuals exactly. hard = no walls / floor / door light at all, only the own dot + faint ripples that pass through walls.
+  difficulty: { def: 'easy', list: ['easy', 'normal', 'hard'],
+    easy:   { weak: { radius: 2.0, afterglow: 3.5 }, strong: { radius: 15.0, afterglow: 5.0 }, glow: 1.0, walls: true,  aura: true,  rippleA: 1.0 },
+    normal: { weak: { radius: 1.5, afterglow: 2.0 }, strong: { radius: 10.0, afterglow: 2.5 }, glow: 0.7, walls: true,  aura: true,  rippleA: 1.0 },
+    hard:   { weak: null, strong: null, glow: 0, walls: false, aura: false, rippleA: 0.45, dotR: 0.07, dotA: 0.5 } },
+  // opening (ch. 1): bell + one ripple over the inn picture, outline lights for a moment, then on
+  opening: { artFadeSec: 1.5, artOpacity: 0.62, pressSec: 1.8, rippleSec: 1.4, glowPeak: 0.10 /* brightness +10% (no flash) */, hardNoteSec: 1.8 },
   ripple: { speed: 10 /* m/s, slower than real sound for readability */ },
   aura: { radius: 0.4, touchMargin: 0.06, touchSoundInterval: 0.35 },
   // plan 1-3: start 72, floor 70, 180 = faint (Stage 1), walk +0.6/s, no bell for 8 s -> +0.8/s, still 0.6 s -> -12/s
@@ -55,7 +72,8 @@ var CONFIG = {
 /* ===================== 2. Storage + platform layer (swap in CrazyGames SDK later) ===================== */
 var Store = { // every key gets the nk_ prefix
   get: function (k) { try { return localStorage.getItem('nk_' + k); } catch (e) { return null; } },
-  set: function (k, v) { try { localStorage.setItem('nk_' + k, String(v)); } catch (e) {} }
+  set: function (k, v) { try { localStorage.setItem('nk_' + k, String(v)); } catch (e) {} },
+  del: function (k) { try { localStorage.removeItem('nk_' + k); } catch (e) {} }
 };
 var Platform = {
   _muted: false, _muteCbs: [],
@@ -205,7 +223,7 @@ function revPreset(env, name) { // あーと's reverb_presets: noise IR, exponen
   return (env.revs[name] = cv);
 }
 function level(name) { var L = DATA.sound.levels; return (L && L[name]) || 1; }
-/* Play one recipe (all layers of that name) on env. opt: at (absolute ctx time), delay, pan, gainMul, lowpassHz, freqMul,
+/* Play one recipe (all layers of that name) on env. opt: at (absolute ctx time), delay, pan, gainMul, lowpassHz, cutSec, freqMul,
    noiseFilterMul, dest (node), raw (skip level calibration). Returns end time. */
 function voice(env, name, opt) {
   var layers = DATA.recipes[name];
@@ -214,6 +232,7 @@ function voice(env, name, opt) {
   var ctx = env.ctx, t0 = (opt.at != null ? opt.at : ctx.currentTime + 0.008) + (opt.delay || 0), end = t0;
   var head = ctx.createGain(), last = head;
   if (opt.lowpassHz) { var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = opt.lowpassHz; head.connect(lp); last = lp; }
+  if (opt.cutSec) { head.gain.setValueAtTime(1, t0 + opt.cutSec * 0.5); head.gain.exponentialRampToValueAtTime(0.0001, t0 + opt.cutSec); } // short (broken bell)
   var pn = panNode(ctx, opt.pan || 0); last.connect(pn); pn.connect(opt.dest || env.dest);
   var gm = (opt.gainMul == null ? 1 : opt.gainMul) * (opt.raw ? 1 : level(name)), fm = opt.freqMul || 1, nm = opt.noiseFilterMul || 1;
   layers.forEach(function (L) {
@@ -527,17 +546,31 @@ var Howto = {
   used: function (k) { var d = this.left[k]; if (d && !d.classList.contains('used')) d.classList.add('used'); },
   hide: function () { this.el.classList.remove('show'); }
 };
+function setText(id, t) { var el = document.getElementById(id); if (el) el.textContent = t == null ? '' : t; }
 function applyUiText() {
   var tEl = document.getElementById('title'), sEl = document.getElementById('subtitle');
   if (CONFIG.title.image) { // swap-in point for the title art (not used until approved)
     tEl.textContent = ''; var im = document.createElement('img'); im.src = CONFIG.title.image; im.alt = UI ? UI.title : ''; im.className = 'titleimg'; tEl.appendChild(im); sEl.textContent = '';
   } else if (UI) { tEl.textContent = UI.title; sEl.textContent = UI.subtitle; }
+  if (UI) {
+    document.title = UI.titleFull || document.title;
+    setText('titlealt', UI.titleAlt); setText('genre', UI.genre); setText('phonestext', UI.headphones);
+    var M = UI.menu || {}, D = UI.difficulty || {};
+    setText('btn-new', M.newGame); setText('btn-cont', M.cont); setText('btn-credits', M.credits); setText('creditsclose', M.close);
+    setText('diffhead', D.head); setText('hardnotetext', D.hardNote); setText('pausediffhead', D.pauseHead);
+    CONFIG.difficulty.list.forEach(function (k) {
+      setText('diff-' + k + '-l', D[k]); setText('diff-' + k + '-d', D[k + 'Desc']); setText('pdiff-' + k, D[k]);
+    });
+    var cl = document.getElementById('creditslist');
+    if (cl && UI.credits) { cl.innerHTML = ''; UI.credits.forEach(function (t, i) { var d = document.createElement('div'); d.className = i === 0 ? 'ctitle' : (t === '' ? 'cgap' : 'cl'); d.textContent = t; cl.appendChild(d); }); }
+  }
   if (UI && UI.credit) {
     var cvEl = document.getElementById('credit-voice') || document.getElementById('credit');
     if (cvEl) cvEl.textContent = UI.credit;
   }
   if (UI && UI.artCredit) { var ca = document.getElementById('credit-art'); if (ca) ca.textContent = UI.artCredit; }
   Howto.build();
+  Opening.refresh();
 }
 
 /* ===================== 7c. Prologue (plan 1; text from text/prologue.json) ===================== */
@@ -857,6 +890,42 @@ var heart = newHeart(), monoDone = false, faint = null;
 var fx = { I: 0.16, lvS: 0, darkS: 0 };
 function newStats() { return { weak: 0, strong: 0, auto: 0, ripples: 0, moved: 0, clears: 0, firstBell: -1, clearTime: -1, maxBpm: CONFIG.heart.start, recoveries: 0, faints: 0, inputs: 0, monoAt: -1 }; }
 var stats = newStats();
+/* Difficulty (ch. 2): saved as nk_difficulty. The active one is fixed when a stage starts; a change from the pause menu waits for the next stage. */
+function validDiff(d) { return CONFIG.difficulty.list.indexOf(d) >= 0 ? d : CONFIG.difficulty.def; }
+var DIFF = validDiff(Store.get('difficulty'));
+function diffCfg() { return CONFIG.difficulty[DIFF]; }
+/* Bell life B (ch. 3): cracks. Weak ring never depends on this (always possible = no soft-lock). */
+var Bell = {
+  d: CONFIG.bell.life.max, lastRing: -99, brokenUntil: -1, brokenCount: 0,
+  reset: function () { this.d = CONFIG.bell.life.max; this.lastRing = -99; this.brokenUntil = -1; },
+  broken: function () { return this.brokenUntil >= 0; },
+  canStrong: function () { return !this.broken() && this.d >= CONFIG.bell.life.strongMin; },
+  muddy: function () { return this.broken() ? 2 : this.d <= CONFIG.bell.life.muddyAtOrBelow ? 1 : 0; },
+  stage: function () { var L = CONFIG.bell.life; return this.broken() ? 3 : this.d >= L.crack1Below ? 0 : this.d >= L.crack2Below ? 1 : 2; },
+  spend: function (kind) {
+    var L = CONFIG.bell.life; this.lastRing = simTime;
+    if (this.broken()) return;                                   // broken: weak still rings (muddy), costs nothing
+    this.d = Math.max(0, this.d - (kind === 'strong' ? L.strongCost : L.weakCost));
+    if (this.d <= 0) { this.d = 0; this.brokenUntil = simTime + L.breakSec; this.brokenCount++; }
+  },
+  update: function (dt) {
+    var L = CONFIG.bell.life;
+    if (this.broken()) { if (simTime >= this.brokenUntil) { this.brokenUntil = -1; this.d = L.afterBreak; } return; }
+    if (simTime - this.lastRing >= L.regenDelaySec) this.d = Math.min(L.max, this.d + (L.regenPerSec[DIFF] || L.regenPerSec.easy) * dt);
+  }
+};
+var bellEl = document.getElementById('bellui');
+function renderBellUi() {
+  if (!bellEl) return;
+  var on = started && phase === 'stage1';
+  bellEl.classList.toggle('show', on);
+  if (!on) return;
+  var st = Bell.stage(), cls = 'bs' + st + (Bell.canStrong() ? '' : ' nostrong');
+  if (bellEl.getAttribute('data-c') !== cls) { bellEl.setAttribute('data-c', cls); bellEl.className = 'show ' + cls; Howto.el.classList.toggle('nostrong', !Bell.canStrong()); }
+  var L = CONFIG.bell.life, k = st === 3 ? L.iconShakePx : 0;
+  bellEl.style.opacity = st === 3 ? String(L.iconDim * 0.72) : '';
+  bellEl.style.transform = k ? 'translate(' + (k * Math.sin(simTime * 37)).toFixed(2) + 'px,' + (k * Math.sin(simTime * 29 + 1)).toFixed(2) + 'px)' : '';
+}
 var introBellAt = -1, textStartAt = -1; // introBellAt kept only so clearFx can cancel a pending intro bell
 function heartLevel(b) { var L = CONFIG.heart.levels; return b >= L[2] ? 3 : b >= L[1] ? 2 : b >= L[0] ? 1 : 0; }
 function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
@@ -948,14 +1017,18 @@ function updateBeats() {
 
 /* ===================== 9. Bell / echo ===================== */
 function ringBell(kind, auto) {
-  var b = CONFIG.bell[kind];
+  var b = CONFIG.bell[kind], D = diffCfg(), L = CONFIG.bell.life;
   if (cool[kind] > simTime) return false;
+  if (kind === 'strong' && !auto && !Bell.canStrong()) return false;   // caller plays the dull sound (dullBell)
   cool.weak = Math.max(cool.weak, simTime + CONFIG.bell.weak.cooldown);
   if (kind === 'strong') cool.strong = simTime + b.cooldown;
   stats[kind]++; stats.ripples++;
+  var mud = auto ? 0 : Bell.muddy();
+  if (!auto) Bell.spend(kind);                                          // the scripted intro bell costs nothing
   if (auto) { stats.auto++; /*@TEST*/ TestSub.autoBellAt = simTime; /*@END_TEST*/ } else { if (stats.firstBell < 0) stats.firstBell = playTime; heart.bpm += b.bpm; heart.sinceBell = 0; heart.inputSinceRest = true; Howto.used(kind === 'strong' ? 'hold' : 'tap'); }
-  ripples.push({ x: P.x, y: P.y, t0: simTime, maxR: b.radius, strong: kind === 'strong' });
-  play(kind === 'strong' ? 'bell_strong' : 'bell_weak');
+  var vis = D[kind];                                                    // null on hard: nothing on the walls
+  ripples.push({ x: P.x, y: P.y, t0: simTime, maxR: vis ? vis.radius : b.radius, strong: kind === 'strong', a: D.rippleA });
+  play(kind === 'strong' ? 'bell_strong' : 'bell_weak', mud === 2 ? { lowpassHz: L.brokenLowpassHz, gainMul: L.brokenGain, cutSec: L.brokenCutSec } : mud === 1 ? { lowpassHz: L.muddyLowpassHz } : undefined);
   if (!auto) vibrate(b.vibrateMs);
   Sub.byTrigger('first_bell');
   var perSeg = {};
@@ -963,17 +1036,22 @@ function ringBell(kind, auto) {
     var ang = (i / b.rays) * Math.PI * 2 + (kind === 'weak' ? 0.04 : 0.02);
     var dx = Math.cos(ang), dy = Math.sin(ang), best = Infinity, bi = -1;
     for (var j = 0; j < MAP.walls.length; j++) { var t = raySeg(P.x, P.y, dx, dy, MAP.walls[j]); if (t > 0 && t < best) { best = t; bi = j; } }
-    if (bi < 0 || best > b.radius) continue;
+    if (bi < 0 || best > b.radius) continue;                           // sound reach: the same on every difficulty
     var w = MAP.walls[bi], mat = CONFIG.materials[w.m];
     if (w.m === 'hole') continue;   // holes swallow the sound: no glow, no echo
-    glows.push({ x: P.x + dx * best, y: P.y + dy * best, w: bi, half: Math.min(0.55, best * Math.PI / b.rays * 1.08) + 0.03,
-      at: simTime + best / CONFIG.ripple.speed, life: b.afterglow * mat.life, a: mat.glow * (kind === 'strong' ? 1 : 0.9) });
+    if (D.walls && vis && best <= vis.radius) glows.push({ x: P.x + dx * best, y: P.y + dy * best, w: bi, half: Math.min(0.55, best * Math.PI / b.rays * 1.08) + 0.03,
+      at: simTime + best / CONFIG.ripple.speed, life: vis.afterglow * mat.life, a: mat.glow * (kind === 'strong' ? 1 : 0.9) * D.glow });
     var s = perSeg[bi];
     if (!s || best < s.d) perSeg[bi] = { d: best, dx: dx, m: w.m };
   }
   Object.keys(perSeg).map(function (k) { return perSeg[k]; }).sort(function (a, c) { return a.d - c.d; })
     .forEach(function (s) { sndEcho(s.m, s.d, s.dx * 0.9, kind === 'strong'); });
   return true;
+}
+function dullBell() { // strong refused (durability < 20 or about to break): dull 'kasu', no ripple, no cost
+  var L = CONFIG.bell.life; stats.dull = (stats.dull || 0) + 1;
+  play('touch', { lowpassHz: L.dullLowpassHz, gainMul: L.dullGain });
+  /*@TEST*/ TestBell.dull.push(simTime); /*@END_TEST*/
 }
 
 /* ===================== 10. Input ===================== */
@@ -992,7 +1070,11 @@ function pressEnd(id) {
 function updatePresses() {
   for (var id in presses) {
     var p = presses[id];
-    if (!p.fired && simTime - p.t0 >= CONFIG.input.strongHold) { p.fired = true; if (ringBell('strong') || ringBell('weak')) accepted(); }
+    if (!p.fired && simTime - p.t0 >= CONFIG.input.strongHold) {
+      p.fired = true;
+      if (!Bell.canStrong()) { dullBell(); accepted(); Howto.used('hold'); }   // ch. 3: dull sound only, durability unchanged
+      else if (ringBell('strong') || ringBell('weak')) accepted();
+    }
   }
 }
 function inputHeld() { return Object.keys(presses).length > 0 || moveTouch !== null || MOVE_KEYS.some(function (k) { return keys[k]; }); }
@@ -1020,7 +1102,7 @@ window.addEventListener('keydown', function (e) {
   audioResume();
   if (e.code === 'Space' || e.code.indexOf('Arrow') === 0) e.preventDefault();
   if (e.repeat) return;
-  if (!started) { if (e.code === 'Space' || e.code === 'Enter') beginGame(); return; }
+  if (!started) { if (document.getElementById('credits').classList.contains('show')) { document.getElementById('credits').classList.remove('show'); return; } Opening.key(e.code); return; }
   if (e.code === 'KeyP') { setPaused(!paused); return; }
   if (phase === 'prologue') { if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); Prologue.advance(); } return; }
   if (paused || inFaint()) return;
@@ -1075,6 +1157,7 @@ function updateFaint(dt) {
   if (!faint.back && faint.t >= F.outSec + F.holdSec) { // 3 s of black, then wake up in the same room
     var r = CONFIG.respawn[P.area] || MAP.start;
     P.x = r.x; P.y = r.y; P.moving = false; heart = newHeart(); ripples = []; glows = []; faint.back = true; faintAudio(false);
+    Bell.reset(); // ch. 3: a restart refills the bell
   }
   if (faint.t >= F.outSec + F.holdSec + F.inSec) faint = null;
 }
@@ -1089,7 +1172,8 @@ function updateFx(dt) { // smoothed (non-beat) values for the pulse level and di
 }
 function step(dt) {
   simTime += dt;
-  if (!started || paused) return;
+  if (!started) { Opening.update(dt); return; }
+  if (paused) return;
   if (phase === 'prologue') { if (!DATA.ready) return; Prologue.update(dt); Echo.tick(); return; }
   if (!DATA.ready) return;                     // input not accepted until data is in
   if (!readyMarked) { readyMarked = true; textStartAt = simTime + CONFIG.text.firstDelay; Voice.loadStage(DATA.text);
@@ -1102,6 +1186,7 @@ function step(dt) {
   if (textStartAt > 0 && simTime >= textStartAt) { textStartAt = -1; Sub.startOpening(); }
   if (autoBellIn > 0) { autoBellIn -= dt; if (autoBellIn <= 0) { autoBellIn = -1; ringBell('weak', true); } }
   updatePresses();
+  Bell.update(dt);
   var v = moveVector();
   if (v && !P.moving) accepted();
   P.moving = !!v;
@@ -1204,7 +1289,8 @@ function render() {
   var c = g2;
   if (phase === 'prologue') { Prologue.render(c); return; }
   c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = '#000'; c.fillRect(0, 0, cv.width, cv.height);
-  if (!started) { applyTextFx(); return; }
+  renderBellUi();
+  if (!started) { Opening.render(); applyTextFx(); return; }
   drawPulse(c);
   var sway = lvLerp(CONFIG.fx.swayPx), ox = sway * Math.sin(simTime * 2 * Math.PI * 0.23), oy = sway * Math.sin(simTime * 2 * Math.PI * 0.17 + 1);
   c.setTransform(DPR * PPM, 0, 0, DPR * PPM, DPR * (W_ / 2 - P.x * PPM + ox), DPR * (H_ / 2 - P.y * PPM + oy));
@@ -1228,10 +1314,15 @@ function render() {
     var r = ripples[k], rad = (simTime - r.t0) * CONFIG.ripple.speed;
     if (rad <= 0) continue;
     var fade = Math.max(0, 1 - rad / r.maxR);
-    c.strokeStyle = 'rgba(210,218,232,' + (fade * (r.strong ? 0.55 : 0.45)).toFixed(3) + ')'; c.lineWidth = (r.strong ? 2.2 : 1.3) * px1;
+    var ra = r.a == null ? 1 : r.a;
+    c.strokeStyle = 'rgba(210,218,232,' + (fade * (r.strong ? 0.55 : 0.45) * ra).toFixed(3) + ')'; c.lineWidth = (r.strong ? 2.2 : 1.3) * px1;
     c.beginPath(); c.arc(r.x, r.y, Math.min(rad, r.maxR), 0, Math.PI * 2); c.stroke();
-    if (r.strong && rad > 0.6) { c.strokeStyle = 'rgba(210,218,232,' + (fade * 0.22).toFixed(3) + ')'; c.lineWidth = px1; c.beginPath(); c.arc(r.x, r.y, rad - 0.6, 0, Math.PI * 2); c.stroke(); }
+    if (r.strong && rad > 0.6) { c.strokeStyle = 'rgba(210,218,232,' + (fade * 0.22 * ra).toFixed(3) + ')'; c.lineWidth = px1; c.beginPath(); c.arc(r.x, r.y, rad - 0.6, 0, Math.PI * 2); c.stroke(); }
   }
+  var D = diffCfg();
+  if (!D.aura) {                                     // hard: only a small dot where I am (no ring, no wall-touch arcs)
+    c.fillStyle = 'rgba(214,220,232,' + D.dotA + ')'; c.beginPath(); c.arc(P.x, P.y, D.dotR, 0, Math.PI * 2); c.fill();
+  } else {
   var R = CONFIG.aura.radius, breath = 0.85 + 0.15 * Math.sin(simTime * 1.7);   // aura
   var grd = c.createRadialGradient(P.x, P.y, 0, P.x, P.y, R);
   grd.addColorStop(0, 'rgba(190,200,220,' + (0.10 * breath).toFixed(3) + ')'); grd.addColorStop(1, 'rgba(190,200,220,0)');
@@ -1241,6 +1332,7 @@ function render() {
     var at = auraTouch[m];
     c.strokeStyle = 'rgba(230,234,244,' + (0.25 + 0.5 * at.k).toFixed(3) + ')'; c.lineWidth = 2 * px1;
     c.beginPath(); c.arc(P.x, P.y, R, at.ang - 0.55, at.ang + 0.55); c.stroke();
+  }
   }
   // edges sink over the lines too, but only with the smoothed level (never with the beat)
   c.setTransform(DPR * W_ / 2, 0, 0, DPR * H_ / 2, DPR * W_ / 2, DPR * H_ / 2);
@@ -1266,9 +1358,12 @@ function applyTextFx() { // text by heart level: Lv1 tremble + dims a little on 
 
 /* ===================== 13. Flow ===================== */
 var startEl = document.getElementById('start'), pausedEl = document.getElementById('paused');
-function beginGame() {
+function beginGame(diff) {
   if (started) return;
   audioResume();
+  if (diff) { DIFF = validDiff(diff); Store.set('difficulty', DIFF); }
+  Store.del('stage');                     // a new game replaces the old save (saved again when Stage 1 starts)
+  Opening.close();
   /*@TEST*/ TestHud.startTap(); /*@END_TEST*/
   started = true; phase = 'prologue'; readyMarked = false; playTime = 0; startEl.classList.add('hide');
   P.x = MAP.start.x; P.y = MAP.start.y; P.area = 'bedroom';
@@ -1283,6 +1378,8 @@ function startStage1() {
   if (Prologue.on) Prologue.stop();
   started = true; phase = 'stage1';
   readyMarked = false; playTime = 0;
+  DIFF = validDiff(Store.get('difficulty')); Bell.reset(); Store.set('stage', 's1'); // ch. 1: save = start of this stage (no mid-stage save)
+  startEl.classList.add('hide'); Opening.close();
   P.x = MAP.start.x; P.y = MAP.start.y; P.area = 'bedroom'; P.moving = false;
   heart = newHeart(); monoDone = false; faint = null; fx.I = PULSE ? PULSE.lv0 : 0.16; fx.lvS = 0;
   stats = newStats(); clearing = 0; ripples = []; glows = [];
@@ -1293,17 +1390,103 @@ function finishClear() {
   clearing = 0; started = false; phase = 'title'; ripples = []; glows = []; dropInput();
   if (Prologue.on) Prologue.stop();
   P.x = MAP.start.x; P.y = MAP.start.y; Sub.reset(); Howto.hide();
+  Opening.reset();
   /*@TEST*/ if (TestHud.showLog()) return; /*@END_TEST*/
   startEl.classList.remove('hide');
 }
 function setPaused(v) {
   if (!started || paused === v) return;
-  paused = v; pausedEl.classList.toggle('show', v);
+  paused = v; pausedEl.classList.toggle('show', v); if (v) markPauseDiff();
   dropInput();
   if (v) { vibrateStop(); Platform.gameplayStop(); if (A.ctx) A.ctx.suspend().catch(function () {}); }
   else { Platform.gameplayStart(); audioResume(); }
 }
-startEl.addEventListener('pointerdown', function (e) { e.preventDefault(); beginGame(); });
+function continueGame() { // ch. 1: back to the start of the saved stage, with the saved difficulty and prologue choices
+  if (started || !Store.get('stage')) return;
+  audioResume();
+  /*@TEST*/ TestHud.startTap(); /*@END_TEST*/
+  Platform.gameplayStart();
+  startStage1();
+}
+/* Opening (ch. 1): inn picture C fades in, title + subtitle + genre line + headphones; 新しく / 続きから.
+   A press rings the clay bell once (bell_weak), one ripple crosses the picture and the inn brightens a little, then on. */
+var Opening = {
+  state: 'main', t: 0, action: null, diffSel: CONFIG.difficulty.def, artOk: false, artStarted: false, x: 0.5, y: 0.5,
+  el: function (id) { return document.getElementById(id); },
+  hasSave: function () { return !!Store.get('stage'); },
+  refresh: function () {
+    var c = this.el('btn-cont'); if (!c) return;
+    var ok = this.hasSave(); c.disabled = !ok; c.classList.toggle('off', !ok); c.setAttribute('aria-disabled', ok ? 'false' : 'true');
+    this.diffSel = validDiff(Store.get('difficulty'));
+    this.markDiff();
+  },
+  markDiff: function () { var self = this; CONFIG.difficulty.list.forEach(function (k) { var b = self.el('diff-' + k); if (b) b.classList.toggle('sel', k === self.diffSel); }); },
+  show: function (st) {
+    this.state = st; this.t = 0;
+    startEl.setAttribute('data-state', st);
+  },
+  reset: function () { this.action = null; this.show('main'); this.refresh(); this.el('credits').classList.remove('show'); },
+  close: function () { this.action = null; this.state = 'off'; startEl.setAttribute('data-state', 'off'); this.el('credits').classList.remove('show'); },
+  loadArt: function () { // after the page has loaded: never part of the first load; black + text until it is in
+    if (this.artStarted) return; this.artStarted = true;
+    var self = this, im = new Image();
+    im.onload = function () { self.artOk = true; var bg = self.el('startbg'); bg.style.backgroundImage = 'url(' + CONFIG.prologue.art + ')'; bg.classList.add('on'); };
+    im.src = CONFIG.prologue.art;
+  },
+  press: function (what, ev) {
+    if (started || this.state !== 'main' || this.action) return;
+    if (what === 'cont' && !this.hasSave()) return;
+    audioResume();
+    var r = ev && ev.currentTarget && ev.currentTarget.getBoundingClientRect ? ev.currentTarget.getBoundingClientRect() : null;
+    this.x = r ? (r.left + r.width / 2) / innerWidth : 0.5; this.y = r ? (r.top + r.height / 2) / innerHeight : 0.6;
+    this.action = what; this.show('press');
+    play('bell_weak');                                       // 土鈴: the current weak bell
+    /*@TEST*/ TestBell.opening.push({ what: what, at: simTime }); /*@END_TEST*/
+  },
+  pickDiff: function (d) {
+    if (started || this.state !== 'diff') return;
+    this.diffSel = validDiff(d); this.markDiff();
+    if (this.diffSel === 'hard') { this.show('hardnote'); return; }  // one line: please wear headphones, walls are not shown
+    beginGame(this.diffSel);
+  },
+  update: function (dt) {
+    this.t += dt;
+    if (this.state === 'press' && this.t >= CONFIG.opening.pressSec) {
+      var a = this.action; this.action = null;
+      if (a === 'cont') continueGame(); else this.show('diff');
+    } else if (this.state === 'hardnote' && this.t >= CONFIG.opening.hardNoteSec) beginGame('hard');
+  },
+  render: function () {
+    var rp = this.el('oripple'), bg = this.el('startbg'); if (!rp) return;
+    var O = CONFIG.opening, p = this.state === 'press' ? clamp01(this.t / O.rippleSec) : 1;
+    if (p >= 1) { rp.style.opacity = 0; bg.style.filter = ''; return; }
+    var m = Math.max(innerWidth, innerHeight) * 1.1 * p;
+    rp.style.left = (this.x * innerWidth - m) + 'px'; rp.style.top = (this.y * innerHeight - m) + 'px';
+    rp.style.width = rp.style.height = (2 * m) + 'px'; rp.style.opacity = (0.55 * (1 - p)).toFixed(3);
+    bg.style.filter = 'brightness(' + (1 + O.glowPeak * Math.sin(Math.PI * p)).toFixed(3) + ')';   // the inn outline lights for a moment
+  },
+  key: function (code) {
+    var L = CONFIG.difficulty.list, i;
+    if (this.state === 'main') { if (code === 'Space' || code === 'Enter') this.press('new'); return; }
+    if (this.state !== 'diff') return;
+    i = L.indexOf(this.diffSel);
+    if (code === 'ArrowUp' || code === 'KeyW') { this.diffSel = L[Math.max(0, i - 1)]; this.markDiff(); }
+    else if (code === 'ArrowDown' || code === 'KeyS') { this.diffSel = L[Math.min(L.length - 1, i + 1)]; this.markDiff(); }
+    else if (code === 'Space' || code === 'Enter') this.pickDiff(this.diffSel);
+  }
+};
+function onBtn(id, fn) { var e = document.getElementById(id); if (e) e.addEventListener('pointerdown', function (ev) { ev.preventDefault(); ev.stopPropagation(); fn(ev); }); }
+onBtn('btn-new', function (e) { Opening.press('new', e); });
+onBtn('btn-cont', function (e) { Opening.press('cont', e); });
+CONFIG.difficulty.list.forEach(function (k) {
+  onBtn('diff-' + k, function () { Opening.pickDiff(k); });
+  onBtn('pdiff-' + k, function () { Store.set('difficulty', k); markPauseDiff(); }); // takes effect from the next stage start
+});
+onBtn('btn-credits', function () { if (!started) document.getElementById('credits').classList.add('show'); });
+onBtn('credits', function () { document.getElementById('credits').classList.remove('show'); });
+function markPauseDiff() { var cur = validDiff(Store.get('difficulty')); CONFIG.difficulty.list.forEach(function (k) { var b = document.getElementById('pdiff-' + k); if (b) b.classList.toggle('sel', k === cur); }); }
+if (document.readyState === 'complete') Opening.loadArt(); else window.addEventListener('load', function () { Opening.loadArt(); });
+Opening.refresh();
 document.getElementById('pause').addEventListener('pointerdown', function (e) { e.preventDefault(); e.stopPropagation(); setPaused(true); });
 pausedEl.addEventListener('pointerdown', function (e) { e.preventDefault(); setPaused(false); });
 document.addEventListener('visibilitychange', function () { if (document.hidden) { vibrateStop(); setPaused(true); } });
@@ -1375,6 +1558,7 @@ var TestBeats = [];                // booked beats (sim time, AudioContext lub/d
 var TestVoice = { played: [] };
 var TestSub = { log: [], autoBellAt: -1, lineDoneAt: {} };
 var TestPro = { log: [] };
+var TestBell = { dull: [], opening: [] };
 TestBeats.lubs = [];               // sim times at which the visual lub happened
 var TestPin = { bpm: null };
 window.NK_TEST = {
@@ -1444,6 +1628,19 @@ window.NK_TEST = {
   heartMods: function (bpm) { var x = clamp01((bpm - HB.b0) / (HB.b1 - HB.b0)), db = lerp(HB.db0, HB.db1, x); return { gainMul: Math.pow(10, (db - HB.db0) / 20), freqMul: lerp(HB.f0, HB.f1, x), noiseFilterMul: lerp(HB.lp0, HB.lp1, x) / HB.lp0, targetDb: db, ratio: HB.ratio }; },
   setMuted: function (m) { Platform._setMuted(m); },
   setPaused: function (v) { setPaused(v); },
+  // p04: difficulty, bell life, opening
+  bell: function () { return { d: Bell.d, broken: Bell.broken(), brokenLeft: Bell.broken() ? Bell.brokenUntil - simTime : 0, stage: Bell.stage(), canStrong: Bell.canStrong(), muddy: Bell.muddy(),
+    sinceRing: simTime - Bell.lastRing, dull: TestBell.dull.length, brokenCount: Bell.brokenCount, icon: bellEl ? bellEl.className : '' }; },
+  setBell: function (d) { Bell.d = d; Bell.brokenUntil = -1; },
+  diff: function () { return { active: DIFF, saved: Store.get('difficulty'), cfg: diffCfg() }; },
+  setDiff: function (d) { DIFF = validDiff(d); return DIFF; },
+  glows: function () { return glows.map(function (g) { return { w: g.w, life: g.life, a: g.a, wall: MAP.walls[g.w].m }; }); },
+  ripplesInfo: function () { return ripples.map(function (r) { return { maxR: r.maxR, a: r.a, strong: r.strong }; }); },
+  hold: function (sec) { pressStart('t'); manualClock = true; var n = Math.round(sec * 60); for (var i = 0; i < n; i++) advance(1 / 60); manualClock = false; pressEnd('t'); },
+  tap: function () { pressStart('t'); pressEnd('t'); },
+  run: function (sec) { manualClock = true; var n = Math.round(sec * 60); for (var i = 0; i < n; i++) advance(1 / 60); manualClock = false; },
+  openingState: function () { return { state: Opening.state, t: Opening.t, action: Opening.action, diffSel: Opening.diffSel, artOk: Opening.artOk, artStarted: Opening.artStarted, hasSave: Opening.hasSave(), log: TestBell.opening.slice() }; },
+  store: function () { var o = {}; for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); o[k] = localStorage.getItem(k); } return o; },
   config: CONFIG, settings: SETTINGS
 };
 /*@END_TEST*/

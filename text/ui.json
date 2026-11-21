@@ -1,10 +1,47 @@
 {
- "_about": "Other on-screen UI text. howto = labels for the control pictures, based on art/ui/howto_labels.json (digits removed: no numbers on screen). '|' in ja labels = the only places a label may wrap (removed on screen), same as subtitles. test = test-build only. credit = voice credit on the start screen (both languages). artCredit = inn picture credit (Created with Grok), a second line on the start screen, not over the title.",
+ "_about": "Other on-screen UI text. howto = labels for the control pictures, based on art/ui/howto_labels.json (digits removed: no numbers on screen). '|' in ja labels = the only places a label may wrap (removed on screen), same as subtitles. test = test-build only. credit = voice credit on the start screen (both languages). artCredit = inn picture credit (Created with Grok), a second line on the start screen, not over the title. p04: titleFull = full title with subtitle (document title, credits). subtitle = the line under the title on the start screen. genre/headphones/menu/difficulty = opening + difficulty select (planner: docs/opening_difficulty_v0.md). credits = the Credits screen (no digits).",
  "ja": {
   "title": "鳴神館",
+  "titleFull": "鳴神館 ― 闇に鈴鳴る宿",
+  "titleAlt": "Narukami Hall: Ring Once, Then Listen",
+  "genre": "音の反響だけを頼りに、闇の宿を進む音響ホラー。",
+  "headphones": "イヤホン推奨",
+  "menu": {
+   "newGame": "最初から",
+   "cont": "続きから",
+   "credits": "クレジット",
+   "close": "閉じる"
+  },
+  "difficulty": {
+   "head": "難しさを選ぶ",
+   "easy": "やさしい",
+   "normal": "ふつう",
+   "hard": "むずかしい",
+   "easyDesc": "反響で壁がよく見える",
+   "normalDesc": "壁は少しだけ見える",
+   "hardDesc": "壁は見えない。音だけが頼り（イヤホン必須）",
+   "hardNote": "イヤホンをつけてください。壁は表示されません。",
+   "pauseHead": "難しさ（次のステージから）"
+  },
+  "credits": [
+   "鳴神館 ― 闇に鈴鳴る宿",
+   "Narukami Hall: Ring Once, Then Listen",
+   "Author: Timemachine0",
+   "",
+   "Voice (Japanese): VOICEVOX:玄野武宏(CV:ガロ)",
+   "Made with VOICEVOX / character terms: VirVox Project",
+   "English has no voice (subtitles only).",
+   "",
+   "Art: Created with Grok",
+   "(inn exterior picture only)",
+   "",
+   "Fonts: Shippori Mincho and EB Garamond (SIL Open Font License)",
+   "Control pictures: original artwork for this game.",
+   "Sounds are made in the browser with the Web Audio API."
+  ],
   "credit": "VOICEVOX:玄野武宏(CV:ガロ)",
   "artCredit": "Art: Created with Grok",
-  "subtitle": "Narukami Hall — Echoes in the Dark",
+  "subtitle": "闇に鈴鳴る宿",
   "howto": {
    "move": "左半分を|ドラッグ",
    "tap": "弱い鈴",
@@ -23,9 +60,46 @@
  },
  "en": {
   "title": "Narukami Hall",
+  "titleFull": "Narukami Hall: Ring Once, Then Listen",
+  "titleAlt": "",
+  "genre": "An audio horror game. Find your way through the dark by echoes alone.",
+  "headphones": "Headphones recommended",
+  "menu": {
+   "newGame": "New Game",
+   "cont": "Continue",
+   "credits": "Credits",
+   "close": "Close"
+  },
+  "difficulty": {
+   "head": "Choose a difficulty",
+   "easy": "Easy",
+   "normal": "Normal",
+   "hard": "Hard",
+   "easyDesc": "Echoes show the walls clearly",
+   "normalDesc": "Echoes show only a little",
+   "hardDesc": "No walls shown. Sound only (headphones required)",
+   "hardNote": "Please wear headphones. Walls will not be shown.",
+   "pauseHead": "Difficulty (from the next stage)"
+  },
+  "credits": [
+   "Narukami Hall: Ring Once, Then Listen",
+   "鳴神館 ― 闇に鈴鳴る宿",
+   "Author: Timemachine0",
+   "",
+   "Voice (Japanese): VOICEVOX:玄野武宏(CV:ガロ)",
+   "Made with VOICEVOX / character terms: VirVox Project",
+   "English has no voice (subtitles only).",
+   "",
+   "Art: Created with Grok",
+   "(inn exterior picture only)",
+   "",
+   "Fonts: Shippori Mincho and EB Garamond (SIL Open Font License)",
+   "Control pictures: original artwork for this game.",
+   "Sounds are made in the browser with the Web Audio API."
+  ],
   "credit": "VOICEVOX:玄野武宏(CV:ガロ)",
   "artCredit": "Art: Created with Grok",
-  "subtitle": "Echoes in the Dark",
+  "subtitle": "Ring Once, Then Listen",
   "howto": {
    "move": "Drag on the left half",
    "tap": "Soft bell",

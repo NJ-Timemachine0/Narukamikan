@@ -9,7 +9,7 @@
 <link rel="icon" href="data:,">
 <link rel="preload" href="fonts/ShipporiMincho-Regular-nk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/EBGaramond-Regular-nk.woff2" as="font" type="font/woff2" crossorigin>
-<title>Narukami Hall — Echoes in the Dark</title>
+<title>Narukami Hall: Ring Once, Then Listen</title>
 <style>
 /* Fonts: subsets of Shippori Mincho and EB Garamond (SIL OFL 1.1, full texts in fonts/OFL-*.txt). tools/subset_fonts.py */
 @font-face{font-family:"NK Mincho";src:url(fonts/ShipporiMincho-Regular-nk.woff2) format("woff2");font-weight:400;font-display:swap}
@@ -22,8 +22,62 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#
   touch-action:none;overscroll-behavior:none;font-family:"NK Mincho","NK Garamond","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP","Noto Serif CJK JP",Georgia,"Times New Roman",serif}
 html[lang=en] body{font-family:"NK Garamond","NK Mincho",Georgia,"Times New Roman",serif}
 canvas{position:fixed;left:0;top:0;width:100%;height:100%;display:block;touch-action:none}
-#start{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4vmin;background:#000;cursor:pointer;z-index:5;transition:opacity .8s}
+#start{position:fixed;inset:0;display:block;background:#000;z-index:5;transition:opacity .8s;overflow:hidden}
 #start.hide{opacity:0;pointer-events:none;visibility:hidden}
+/* opening (p04): inn picture C behind the title, loaded after the page (black + text until then) */
+#startbg{position:absolute;inset:0;background:#000 center 46%/cover no-repeat;opacity:0;transition:opacity 1.5s ease-in}
+#startbg.on{opacity:.62}
+#startshade{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 34%,rgba(0,0,0,.25) 60%,rgba(0,0,0,.75) 100%);pointer-events:none}
+#oripple{position:absolute;border-radius:50%;border:1.5px solid rgba(220,228,240,1);box-shadow:0 0 18px rgba(200,212,235,.35),inset 0 0 18px rgba(200,212,235,.25);opacity:0;pointer-events:none}
+#stitle{position:absolute;left:0;right:0;top:max(9vh,env(safe-area-inset-top));display:flex;flex-direction:column;align-items:center;gap:1.6vmin;padding:0 5vw;text-align:center}
+#titlealt{font-family:"NK Garamond","NK Mincho",serif;font-size:max(12px,min(2.6vmin,15px));letter-spacing:.06em;color:#9aa0ad}
+#titlealt:empty{display:none}
+#genre{font-size:max(13px,min(3vmin,18px));line-height:1.6;color:#cfd3dc;letter-spacing:.04em;max-width:min(88vw,620px);margin-top:1.4vmin;text-shadow:0 0 8px #000}
+html[lang=ja] #subtitle{font-family:"NK Mincho",serif;letter-spacing:.2em}
+#smenu,#diffsel{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:stretch;gap:12px;width:min(78vw,340px)}
+#diffsel{width:min(88vw,460px);gap:10px;display:none}
+#start[data-state=diff] #diffsel,#start[data-state=hardnote] #diffsel{display:flex}
+#start[data-state=diff] #smenu,#start[data-state=hardnote] #smenu,#start[data-state=diff] #stitle,#start[data-state=hardnote] #stitle{display:none}
+#start[data-state=diff] #startbg.on,#start[data-state=hardnote] #startbg.on{opacity:.3}
+#start[data-state=press] #smenu{opacity:.5;pointer-events:none}
+.sbtn{appearance:none;font:inherit;font-size:max(16px,min(3.8vmin,22px));letter-spacing:.12em;color:#e4e6ec;background:rgba(0,0,0,.5);border:1px solid rgba(200,210,230,.35);border-radius:4px;padding:.65em 1em;cursor:pointer;text-align:center;line-height:1.4}
+.sbtn:hover,.sbtn:focus-visible{border-color:rgba(200,210,230,.7);background:rgba(0,0,0,.65);outline:none}
+.sbtn.off,.sbtn:disabled{opacity:.32;cursor:default;border-color:rgba(200,210,230,.15)}
+html[lang=en] .sbtn{font-family:"NK Garamond","NK Mincho",serif;letter-spacing:.05em}
+#diffhead{text-align:center;color:#9aa0ad;font-size:max(13px,min(2.8vmin,16px));letter-spacing:.12em;margin-bottom:4px}
+.dbtn{display:flex;flex-direction:column;gap:.25em;padding:.6em 1em}
+.dbtn .dl{font-size:1em}
+.dbtn .dd{font-size:max(12px,min(2.5vmin,14px));letter-spacing:.03em;color:#aeb3bf;line-height:1.45}
+.dbtn.sel{border-color:rgba(220,228,240,.85);background:rgba(20,22,28,.7)}
+#hardnote{display:none;text-align:center;color:#e4e6ec;font-size:max(14px,min(3.2vmin,19px));line-height:1.6;margin-top:8px}
+#start[data-state=hardnote] #hardnote{display:block}
+#hardnote svg{width:1.4em;height:1.4em;vertical-align:-.35em;margin-right:.4em}
+#start[data-state=hardnote] .dbtn{pointer-events:none;opacity:.45}
+#start[data-state=hardnote] .dbtn.sel{opacity:1}
+#phones{position:absolute;left:0;right:0;bottom:calc(max(14px,3vmin,env(safe-area-inset-bottom)) + 4.6em);display:flex;align-items:center;justify-content:center;gap:.5em;color:#cfd3dc;font-size:max(14px,min(3.2vmin,19px));letter-spacing:.06em;pointer-events:none}
+#phones svg{width:1.6em;height:1.6em;flex:none}
+#btn-credits{appearance:none;background:transparent;border:0;color:#7d828e;font:inherit;font-size:1em;letter-spacing:.08em;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:2px 8px;margin-top:.15em}
+#credits{position:fixed;inset:0;z-index:9;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.92);cursor:pointer;padding:6vh 7vw;box-sizing:border-box}
+#credits.show{display:flex}
+#creditslist{max-width:min(90vw,640px);max-height:80vh;overflow:auto;text-align:center;color:#cfd3dc;font-size:max(12px,min(2.6vmin,15px));line-height:1.75;letter-spacing:.03em}
+#creditslist .ctitle{font-size:1.45em;color:#e6e8ee;margin-bottom:.7em;letter-spacing:.06em}
+#creditslist .cgap{height:.8em}
+#creditsclose{margin-top:1.2em;opacity:.6;font-size:.95em;text-decoration:underline;text-underline-offset:3px}
+/* bell life (p04): corner icon, cracks by stage, never blinks; no numbers */
+#bellui{position:fixed;left:max(10px,env(safe-area-inset-left));top:calc(max(10px,env(safe-area-inset-top)) + 46px);width:44px;height:44px;display:none;opacity:.72;z-index:4;pointer-events:none}
+#bellui.show{display:block}
+#bellui svg{width:100%;height:100%;display:block}
+#bellui .ck1,#bellui .ck2,#bellui .ck3{display:none}
+#bellui.bs1 .ck1,#bellui.bs2 .ck1,#bellui.bs2 .ck2,#bellui.bs3 .ck1,#bellui.bs3 .ck2,#bellui.bs3 .ck3{display:inline}
+#bellui.bs3{opacity:.32}
+#bellui .sr{transition:opacity .4s}
+#bellui.nostrong .sr{opacity:.12}
+#howto.nostrong .hi-hold:not(.used){opacity:.3}
+#pausediff{position:absolute;left:50%;top:64%;transform:translateX(-50%);width:max-content;max-width:94vw;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:default}
+#pausediffhead{color:#9aa0ad;font-size:max(12px,min(2.6vmin,15px));letter-spacing:.08em;text-align:center}
+#pausediff .row{display:flex;gap:8px}
+#pausediff .sbtn{font-size:max(13px,min(3vmin,17px));padding:.45em .7em;white-space:nowrap;letter-spacing:.06em}
+#pausediff .sbtn.sel{border-color:rgba(220,228,240,.85)}
 #credit{position:absolute;bottom:max(14px,3vmin,env(safe-area-inset-bottom));left:0;right:0;text-align:center;font-family:"NK Mincho",serif;font-size:max(11px,min(2.4vmin,14px));letter-spacing:.06em;color:#7d828e;display:flex;flex-direction:column;gap:.35em;align-items:center;padding:0 6vw}
 #credit .cline{max-width:100%}
 #credit-art{font-family:"NK Garamond","NK Mincho",serif;letter-spacing:.04em;opacity:.9;font-size:.95em}
@@ -31,11 +85,10 @@ canvas{position:fixed;left:0;top:0;width:100%;height:100%;display:block;touch-ac
 #title .titleimg{max-width:80vw;max-height:40vh}
 html[lang=en] #title{font-weight:400}
 #subtitle{font-family:"NK Garamond","NK Mincho",serif;font-size:min(4vmin,20px);letter-spacing:.12em;color:#9aa0ad;text-align:center;padding:0 6vw}
-#hint{display:flex;align-items:center;gap:3vmin;opacity:.75;margin-top:4vmin}
-#hint svg{width:min(14vmin,72px);height:min(14vmin,72px)}
 #pause{position:fixed;right:max(10px,env(safe-area-inset-right));top:max(10px,env(safe-area-inset-top));width:44px;height:44px;border:0;background:transparent;opacity:.35;z-index:4;padding:0;cursor:pointer}
 #pause svg{width:100%;height:100%}
 #paused{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);z-index:7;cursor:pointer}
+#paused > svg{margin-bottom:12vh}
 #paused.show{display:flex}
 #paused svg{width:min(22vmin,120px);height:min(22vmin,120px);opacity:.8}
 #muted{position:fixed;left:max(10px,env(safe-area-inset-left));top:max(10px,env(safe-area-inset-top));width:40px;height:40px;display:none;opacity:.6;z-index:4}
@@ -95,22 +148,44 @@ html[lang=en] #prochoices button{font-family:"NK Garamond","NK Mincho",serif;let
 </head>
 <body>
 <canvas id="cv"></canvas>
-<div id="start" role="button" aria-label="start">
-  <div id="title">Narukami Hall</div>
-  <div id="subtitle">Echoes in the Dark</div>
+<div id="start" data-state="main">
+  <div id="startbg"></div><div id="startshade"></div><div id="oripple"></div>
+  <div id="stitle">
+    <div id="title">Narukami Hall</div>
+    <div id="subtitle">Ring Once, Then Listen</div>
+    <div id="titlealt"></div>
+    <div id="genre"></div>
+  </div>
+  <div id="smenu">
+    <button type="button" class="sbtn" id="btn-new">New Game</button>
+    <button type="button" class="sbtn off" id="btn-cont" disabled>Continue</button>
+  </div>
+  <div id="diffsel">
+    <div id="diffhead"></div>
+    <button type="button" class="sbtn dbtn" id="diff-easy"><span class="dl" id="diff-easy-l">Easy</span><span class="dd" id="diff-easy-d"></span></button>
+    <button type="button" class="sbtn dbtn" id="diff-normal"><span class="dl" id="diff-normal-l">Normal</span><span class="dd" id="diff-normal-d"></span></button>
+    <button type="button" class="sbtn dbtn" id="diff-hard"><span class="dl" id="diff-hard-l">Hard</span><span class="dd" id="diff-hard-d"></span></button>
+    <div id="hardnote"><svg viewBox="0 0 64 64" fill="none" stroke="#e4e6ec" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M14 38v-6a18 18 0 0 1 36 0v6"/><rect x="9" y="36" width="9" height="16" rx="4"/><rect x="46" y="36" width="9" height="16" rx="4"/></svg><span id="hardnotetext"></span></div>
+  </div>
+  <div id="phones"><svg viewBox="0 0 64 64" fill="none" stroke="#cfd3dc" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M14 38v-6a18 18 0 0 1 36 0v6"/><rect x="9" y="36" width="9" height="16" rx="4"/><rect x="46" y="36" width="9" height="16" rx="4"/></svg><span id="phonestext">Headphones recommended</span></div>
   <div id="credit">
     <div class="cline" id="credit-voice">VOICEVOX:玄野武宏(CV:ガロ)</div>
     <div class="cline" id="credit-art">Art: Created with Grok</div>
-  </div>
-  <div id="hint" aria-hidden="true">
-    <!-- earphones -->
-    <svg viewBox="0 0 64 64" fill="none" stroke="#cfd3dc" stroke-width="2" stroke-linecap="round"><path d="M14 38v-6a18 18 0 0 1 36 0v6"/><rect x="9" y="36" width="9" height="16" rx="4"/><rect x="46" y="36" width="9" height="16" rx="4"/></svg>
-    <!-- tap -->
-    <svg viewBox="0 0 64 64" fill="none" stroke="#cfd3dc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="30" cy="16" r="9" opacity=".5"/><path d="M30 16v22l-5-5a4 4 0 0 0-6 5l10 13c2 3 5 4 8 4h6c5 0 8-4 8-9V34a3 3 0 0 0-6 0v-2a3 3 0 0 0-6 0v-1a3 3 0 0 0-6 0"/></svg>
+    <button type="button" id="btn-credits">Credits</button>
   </div>
 </div>
+<div id="credits" role="dialog"><div><div id="creditslist"></div><div id="creditsclose"></div></div></div>
+<div id="bellui" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none" stroke="#cfd3dc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M22 9c-5.5 0-8.5 4.2-8.5 9.5v5.5l-3 5h23l-3-5v-5.5C30.5 13.2 27.5 9 22 9z"/><path d="M22 6v3"/><circle cx="22" cy="32" r="2"/>
+  <path class="sr" d="M7 14a17 17 0 0 0 0 16M37 14a17 17 0 0 1 0 16" stroke-width="1.4"/>
+  <path class="ck1" d="M20 12l2.5 4-2 3 2.5 3.5" stroke-width="1.3"/>
+  <path class="ck2" d="M27 17l-2.5 3.2 2 2.6-1.8 3.4" stroke-width="1.3"/>
+  <path class="ck3" d="M15.5 21l3 1.6-1 2.6 2.6 2.4M22 22.5l1.2 3.2-1.6 2" stroke-width="1.3"/>
+</svg></div>
 <button id="pause" aria-label="pause"><svg viewBox="0 0 44 44" fill="#cfd3dc"><rect x="13" y="11" width="6" height="22" rx="2"/><rect x="25" y="11" width="6" height="22" rx="2"/></svg></button>
-<div id="paused" aria-label="resume"><svg viewBox="0 0 64 64" fill="none" stroke="#cfd3dc" stroke-width="2.5" stroke-linejoin="round"><path d="M24 16l24 16-24 16z"/></svg></div>
+<div id="paused" aria-label="resume"><svg viewBox="0 0 64 64" fill="none" stroke="#cfd3dc" stroke-width="2.5" stroke-linejoin="round"><path d="M24 16l24 16-24 16z"/></svg>
+  <div id="pausediff"><div id="pausediffhead"></div><div class="row"><button type="button" class="sbtn" id="pdiff-easy">Easy</button><button type="button" class="sbtn" id="pdiff-normal">Normal</button><button type="button" class="sbtn" id="pdiff-hard">Hard</button></div></div>
+</div>
 <svg id="muted" viewBox="0 0 40 40" fill="none" stroke="#cfd3dc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 16h6l8-6v20l-8-6H8z"/><path d="M28 15l8 10M36 15l-8 10"/></svg>
 <div id="howto" aria-hidden="true"></div>
 <div id="sub" aria-live="polite"></div>
